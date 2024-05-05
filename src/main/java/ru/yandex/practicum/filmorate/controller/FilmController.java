@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Marker;
 
@@ -18,7 +19,7 @@ import java.util.Map;
 @Validated
 public class FilmController {
     Map<Integer, Film> filmMap = new HashMap<>();
-    Integer maxId;
+    Integer maxId = 0;
 
     @GetMapping
     public List<Film> getFilms() {
@@ -40,6 +41,10 @@ public class FilmController {
     @Validated(Marker.Update.class)
     public Film updateFilm(@RequestBody @Valid Film film) {
         Integer id = film.getId();
+        Film oldFilm = filmMap.get(id);
+        if (oldFilm == null) {
+            throw new NotFoundException("Film id in not found");
+        }
         filmMap.put(id, film);
         log.info("Updated film: {}", film);
         return film;
