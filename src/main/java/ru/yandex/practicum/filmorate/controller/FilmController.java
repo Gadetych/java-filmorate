@@ -23,36 +23,39 @@ public class FilmController {
 
     @GetMapping
     public List<Film> getFilms() {
-        log.info("Get all films");
+        log.info("<== Get all films");
         return new ArrayList<>(filmMap.values());
     }
 
     @PostMapping
     @Validated(Marker.Create.class)
     public Film addFilm(@RequestBody @Valid Film film) {
+        log.info("==> POST /films {}", film);
         Integer id = nextId();
         film.setId(id);
         filmMap.put(id, film);
-        log.info("Added film: {}", film);
+        log.info("<== Added film: {}", film);
         return film;
     }
 
     @PutMapping
     @Validated(Marker.Update.class)
     public Film updateFilm(@RequestBody @Valid Film film) {
+        log.info("==> PUT /films {}", film);
         Integer id = film.getId();
         Film oldFilm = filmMap.get(id);
         if (oldFilm == null) {
             throw new NotFoundException("Film id in not found");
         }
         filmMap.put(id, film);
-        log.info("Updated film: {}", film);
+        log.info("<== Updated film: {}", film);
         return film;
     }
 
     private Integer nextId() {
+        log.debug("==> Prev id: {}", maxId);
         maxId++;
-        log.debug("Next id: {}", maxId);
+        log.debug("<== Next id: {}", maxId);
         return maxId;
     }
 }
