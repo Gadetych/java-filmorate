@@ -1,64 +1,87 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.model.Marker;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.dto.Marker;
+import ru.yandex.practicum.filmorate.dto.User;
+import ru.yandex.practicum.filmorate.service.UserService;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("users")
 @Slf4j
 @Validated
+@RequiredArgsConstructor
 public class UserController {
-    Map<Integer, User> users = new HashMap<>();
-    Integer maxId = 0;
+    private final UserService userService;
 
     @GetMapping
     public List<User> getUsers() {
-        log.error("<== Get all users");
-        return new ArrayList<>(users.values());
+        log.info("<== Get all users");
+        return userService.getUsers();
+    }
+
+    @GetMapping("/{id}")
+    public User get(@PathVariable @Positive int id) {
+        log.info("==> GET /users/{id} {}", id);
+        User user = userService.get(id);
+        log.info("<== GET user = {}", user);
+        return user;
     }
 
     @PostMapping
     @Validated(Marker.Create.class)
-    public User addUser(@RequestBody @Valid User user) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public User add(@RequestBody @Valid User user) {
         log.info("==> POST /users {}", user);
-        Integer id = nextId();
-        user.setId(id);
-        if (user.getName() == null) {
-            user.setName(user.getLogin());
-        }
-        users.put(id, user);
+        User newUser = userService.add(user);
         log.info("<== Added user: {}", user);
-        return user;
+        return newUser;
     }
 
     @PutMapping
     @Validated(Marker.Update.class)
-    public User updateUser(@RequestBody @Valid User user) {
+    public User update(@RequestBody @Valid User user) {
         log.info("==> PUT /users {}", user);
-        Integer id = user.getId();
-        User oldUser = users.get(id);
-        if (oldUser == null) {
-            throw new  NotFoundException("User id in not found");
-        }
-        users.put(user.getId(), user);
+        User newUser = userService.update(user);
         log.info("<== Updated user: {}", user);
-        return user;
+        return newUser;
     }
 
-    private Integer nextId() {
-        log.debug("==> Prev id: {}", maxId);
-        maxId++;
-        log.debug("<== Next id: {}", maxId);
-        return maxId;
+    @PostMapping("/{id}/friends/{friendId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void addFriends(@PathVariable int id, @PathVariable int friendId) {
+        log.info("==> POST /users/{}/friends/{}", id, friendId);
+        userService.addFriend(id, friendId);
+    }
+
+    @DeleteMapping("/{id}/friends/{friendId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeFriend(@PathVariable int id, @PathVariable int friendId) {
+        log.info("==> DELETE /users/{}/friends/{}", id, friendId);
+        userService.removeFriend(id, friendId);
+    }
+
+    @GetMapping("/{id}/friends")
+    public Collection<Integer> getFriends(@PathVariable int id) {
+        log.info("==> GET /users/{}/friends", id);
+        Collection<Integer> friends = userService.getFriends(id);
+        log.info("<== GET /users/{}/friends = {}", id, friends);
+        return friends;
+    }
+
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public Collection<Integer> commonFriends(@PathVariable int id, @PathVariable int otherId) {
+        log.info("==> GET /users/{}/friends/common/{}", id, otherId);
+        Collection<Integer> commonFriends = userService.getCommonFriends(id, otherId);
+        log.info("<== GET /users/{}/friends/common/{} = {}", id, otherId, commonFriends);
+        return commonFriends;
     }
 }
