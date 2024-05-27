@@ -57,20 +57,20 @@ public class UserController {
 
     @PostMapping("/{id}/friends/{friendId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void addFriends(@PathVariable int id, @PathVariable int friendId) {
+    public void addFriends(@PathVariable @Positive int id, @PathVariable @Positive int friendId) {
         log.info("==> POST /users/{}/friends/{}", id, friendId);
         userService.addFriend(id, friendId);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeFriend(@PathVariable int id, @PathVariable int friendId) {
+    public void removeFriend(@PathVariable @Positive int id, @PathVariable @Positive int friendId) {
         log.info("==> DELETE /users/{}/friends/{}", id, friendId);
         userService.removeFriend(id, friendId);
     }
 
     @GetMapping("/{id}/friends")
-    public Collection<Integer> getFriends(@PathVariable int id) {
+    public Collection<Integer> getFriends(@PathVariable @Positive int id) {
         log.info("==> GET /users/{}/friends", id);
         Collection<Integer> friends = userService.getFriends(id);
         log.info("<== GET /users/{}/friends = {}", id, friends);
@@ -78,10 +78,11 @@ public class UserController {
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
-    public Collection<Integer> commonFriends(@PathVariable int id, @PathVariable int otherId) {
+    public Collection<Integer> commonFriends(@PathVariable @Positive int id, @PathVariable @Positive int otherId) {
         log.info("==> GET /users/{}/friends/common/{}", id, otherId);
         Collection<Integer> commonFriends = userService.getCommonFriends(id, otherId);
         log.info("<== GET /users/{}/friends/common/{} = {}", id, otherId, commonFriends);
         return commonFriends;
+
     }
 }

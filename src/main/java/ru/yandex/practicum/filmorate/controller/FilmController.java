@@ -1,14 +1,17 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.dto.Film;
 import ru.yandex.practicum.filmorate.dto.Marker;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
+import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -23,6 +26,11 @@ public class FilmController {
     public List<Film> getFilms() {
         log.info("<== Get all films");
         return filmService.getFilms();
+    }
+
+    @GetMapping("/{id}")
+    public Film get(@PathVariable int id) {
+        return filmService.get(id);
     }
 
     @PostMapping
@@ -41,5 +49,21 @@ public class FilmController {
         Film newFilm = filmService.update(film);
         log.info("<== Updated film: {}", newFilm);
         return newFilm;
+    }
+
+    @PutMapping("/{id}/like/{userId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void likeIt(@PathVariable @Positive int id, @PathVariable @Positive int userId) {
+        filmService.likeIt(id, userId);
+    }
+
+    @GetMapping("/{id}/like")
+    public Collection<Integer> getLikes(@PathVariable @Positive int id) {
+        return filmService.getLikes(id);
+    }
+
+    @GetMapping("/popular")
+    public List<Integer> getTopFilms(@RequestParam(defaultValue = "10") @Positive int count) {
+        return filmService.getTopFilms(count);
     }
 }

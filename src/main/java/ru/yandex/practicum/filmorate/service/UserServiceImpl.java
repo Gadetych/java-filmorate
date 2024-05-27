@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User get(int id) {
         return userRepositories.get(id)
-                .orElseThrow(() -> new NotFoundException("Not found user with id = " + id));
+                .orElseThrow(() -> new NotFoundException("The user with the ID was not found " + id));
     }
 
     private boolean checkUserExists(User user) {
@@ -59,6 +59,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void removeFriend(int id, int friendId) {
+        userRepositories.getFriends(id)
+                .orElseThrow(() -> new NotFoundException("The user with ID=" + id + " has not friends."));
         userRepositories.removeFriend(id, friendId);
     }
 
