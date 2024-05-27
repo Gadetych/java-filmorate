@@ -59,7 +59,7 @@ public class InMemoryFilmRepositories implements FilmRepositories {
 
     @Override
     public List<Integer> getTopFilms(int count) {
-        count = count < films.size() ? count : films.size();
+        count = Math.min(count, films.size());
         List<Integer> topFilms = likes.entrySet().stream()
                 .sorted(Comparator.comparingInt(entry -> entry.getValue().size()))
                 .map(Map.Entry::getKey)
