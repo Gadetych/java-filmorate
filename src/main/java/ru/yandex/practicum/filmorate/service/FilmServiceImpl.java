@@ -48,6 +48,8 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public void removeLike(int id, int userId) {
+        filmRepositories.get(id).orElseThrow(() -> new NotFoundException("The movie with the ID was not found: " + id));
+        userRepositories.get(userId).orElseThrow(() -> new NotFoundException("The user with the ID was not found: " + userId));
         filmRepositories.getLikes(id)
                 .orElseThrow(() -> new NotFoundException("The movie with the ID was not found likes: " + id));
         filmRepositories.removeLike(id, userId);
@@ -60,7 +62,7 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public List<Integer> getTopFilms(int count) {
+    public List<Film> getTopFilms(int count) {
         return filmRepositories.getTopFilms(count);
     }
 }

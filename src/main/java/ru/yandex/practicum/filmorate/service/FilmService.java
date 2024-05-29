@@ -21,5 +21,5 @@ public interface FilmService {
 
     Collection<Integer> getLikes(int id);
 
-    List<Integer> getTopFilms(int count);
+    List<Film> getTopFilms(int count);
 }

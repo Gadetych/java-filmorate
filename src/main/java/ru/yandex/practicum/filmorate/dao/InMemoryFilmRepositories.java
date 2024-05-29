@@ -58,13 +58,15 @@ public class InMemoryFilmRepositories implements FilmRepositories {
     }
 
     @Override
-    public List<Integer> getTopFilms(int count) {
-        count = Math.min(count, films.size());
-        List<Integer> topFilms = likes.entrySet().stream()
+    public List<Film> getTopFilms(int count) {
+        count = Math.min(count, likes.size());
+        List<Film> topFilms = likes.entrySet().stream()
                 .sorted(Comparator.comparingInt(entry -> entry.getValue().size()))
+                .limit(count)
                 .map(Map.Entry::getKey)
+                .map(k -> films.get(k))
                 .toList();
-        return topFilms.subList(0, count);
+        return topFilms.reversed();
     }
 
     private Integer nextId() {
