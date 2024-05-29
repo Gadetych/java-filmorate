@@ -20,7 +20,7 @@ public interface FilmRepositories {
 
     void removeLike(int id, int userId);
 
-    Optional<Collection<Integer>> getLikes(int id);
+    Collection<Integer> getLikes(int id);
 
     List<Film> getTopFilms(int count);
 }

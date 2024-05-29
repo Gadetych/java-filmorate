@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.dao.UserRepositories;
 import ru.yandex.practicum.filmorate.dto.Film;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -50,15 +51,19 @@ public class FilmServiceImpl implements FilmService {
     public void removeLike(int id, int userId) {
         filmRepositories.get(id).orElseThrow(() -> new NotFoundException("The movie with the ID was not found: " + id));
         userRepositories.get(userId).orElseThrow(() -> new NotFoundException("The user with the ID was not found: " + userId));
-        filmRepositories.getLikes(id)
-                .orElseThrow(() -> new NotFoundException("The movie with the ID was not found likes: " + id));
+        if (filmRepositories.getLikes(id) == null || filmRepositories.getLikes(id).isEmpty()) {
+            return;
+        }
         filmRepositories.removeLike(id, userId);
     }
 
     @Override
-    public Collection<Integer> getLikes(int id) {
-        return filmRepositories.getLikes(id)
-                .orElseThrow(() -> new NotFoundException("The movie with the ID was not found likes: " + id));
+    public List<Film> getLikes(int id) {
+        filmRepositories.get(id).orElseThrow(() -> new NotFoundException("Not found film with id = " + id));
+        Collection<Integer> likes = filmRepositories.getLikes(id);
+        List<Film> result = new ArrayList<>();
+        likes.forEach(f -> result.add(filmRepositories.get(f).get()));
+        return result;
     }
 
     @Override

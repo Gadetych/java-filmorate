@@ -11,7 +11,6 @@ import ru.yandex.practicum.filmorate.dto.Film;
 import ru.yandex.practicum.filmorate.dto.Marker;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
-import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -64,7 +63,7 @@ public class FilmController {
     }
 
     @GetMapping("/{id}/like")
-    public Collection<Integer> getLikes(@PathVariable @Positive int id) {
+    public List<Film> getLikes(@PathVariable @Positive int id) {
         return filmService.getLikes(id);
     }
 

@@ -53,8 +53,13 @@ public class InMemoryFilmRepositories implements FilmRepositories {
     }
 
     @Override
-    public Optional<Collection<Integer>> getLikes(int id) {
-        return Optional.ofNullable(likes.get(id));
+    public Collection<Integer> getLikes(int id) {
+        Set<Integer> likesUserID = likes.get(id);
+        if (likesUserID == null) {
+            likesUserID = new HashSet<>();
+        }
+        likes.put(id, likesUserID);
+        return likesUserID;
     }
 
     @Override
