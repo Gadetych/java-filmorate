@@ -78,9 +78,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Integer> getCommonFriends(int id, int otherId) {
+    public List<User> getCommonFriends(int id, int otherId) {
         userRepositories.get(id).orElseThrow(() -> new NotFoundException("Not found user with id = " + id));
         userRepositories.get(otherId).orElseThrow(() -> new NotFoundException("Not found other user with id = " + id));
-        return userRepositories.getCommonFriends(id, otherId);
+        List<User> result = new ArrayList<>();
+        List<Integer> commonFriendsIds = userRepositories.getCommonFriends(id, otherId);
+        commonFriendsIds.forEach(f -> result.add(userRepositories.get(f).get()));
+        return result;
     }
 }

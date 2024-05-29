@@ -77,9 +77,9 @@ public class UserController {
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
-    public List<Integer> commonFriends(@PathVariable @Positive int id, @PathVariable @Positive int otherId) {
+    public List<User> commonFriends(@PathVariable @Positive int id, @PathVariable @Positive int otherId) {
         log.info("==> GET /users/{}/friends/common/{}", id, otherId);
-        List<Integer> commonFriends = userService.getCommonFriends(id, otherId);
+        List<User> commonFriends = userService.getCommonFriends(id, otherId);
         log.info("<== GET /users/{}/friends/common/{} = {}", id, otherId, commonFriends);
         return commonFriends;
 
