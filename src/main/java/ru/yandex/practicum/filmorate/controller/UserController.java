@@ -11,11 +11,10 @@ import ru.yandex.practicum.filmorate.dto.Marker;
 import ru.yandex.practicum.filmorate.dto.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
-import java.util.Collection;
 import java.util.List;
 
 @RestController
-@RequestMapping("users")
+@RequestMapping("/users")
 @Slf4j
 @Validated
 @RequiredArgsConstructor
@@ -55,7 +54,7 @@ public class UserController {
         return newUser;
     }
 
-    @PostMapping("/{id}/friends/{friendId}")
+    @PutMapping("/{id}/friends/{friendId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void addFriends(@PathVariable @Positive int id, @PathVariable @Positive int friendId) {
         log.info("==> POST /users/{}/friends/{}", id, friendId);
@@ -70,17 +69,17 @@ public class UserController {
     }
 
     @GetMapping("/{id}/friends")
-    public Collection<Integer> getFriends(@PathVariable @Positive int id) {
+    public List<User> getFriends(@PathVariable @Positive int id) {
         log.info("==> GET /users/{}/friends", id);
-        Collection<Integer> friends = userService.getFriends(id);
+        List<User> friends = userService.getFriends(id);
         log.info("<== GET /users/{}/friends = {}", id, friends);
         return friends;
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
-    public Collection<Integer> commonFriends(@PathVariable @Positive int id, @PathVariable @Positive int otherId) {
+    public List<Integer> commonFriends(@PathVariable @Positive int id, @PathVariable @Positive int otherId) {
         log.info("==> GET /users/{}/friends/common/{}", id, otherId);
-        Collection<Integer> commonFriends = userService.getCommonFriends(id, otherId);
+        List<Integer> commonFriends = userService.getCommonFriends(id, otherId);
         log.info("<== GET /users/{}/friends/common/{} = {}", id, otherId, commonFriends);
         return commonFriends;
 

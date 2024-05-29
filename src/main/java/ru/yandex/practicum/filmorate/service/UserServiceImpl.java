@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.UserRepositories;
 import ru.yandex.practicum.filmorate.dto.User;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.exception.UserAlreadyExistException;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -27,15 +27,16 @@ public class UserServiceImpl implements UserService {
     }
 
     private boolean checkUserExists(User user) {
-        return userRepositories.get(user.getId())
+        Integer id = user.getId();
+        if (id == null) {
+            return false;
+        }
+        return userRepositories.get(id)
                 .isPresent();
     }
 
     @Override
     public User add(User user) {
-        if (checkUserExists(user)) {
-            throw new UserAlreadyExistException("User already exist with id = " + user.getId());
-        }
         if (user.getName() == null) {
             user.setName(user.getLogin());
         }
@@ -53,24 +54,26 @@ public class UserServiceImpl implements UserService {
     @Override
     public void addFriend(int id, int friendId) {
         userRepositories.get(id).orElseThrow(() -> new NotFoundException("Not found user with id = " + id));
-        userRepositories.get(friendId).orElseThrow(() -> new NotFoundException("Not found friend with id = " + id));
+        userRepositories.get(friendId).orElseThrow(() -> new NotFoundException("Not found friend with id = " + friendId));
         userRepositories.addFriend(id, friendId);
     }
 
     @Override
     public void removeFriend(int id, int friendId) {
-        userRepositories.getFriends(id)
-                .orElseThrow(() -> new NotFoundException("The user with ID=" + id + " has not friends."));
         userRepositories.removeFriend(id, friendId);
     }
 
     @Override
-    public Collection<Integer> getFriends(int id) {
-        return userRepositories.getFriends(id).orElseThrow(() -> new NotFoundException("Not found user with id = " + id));
+    public List<User> getFriends(int id) {
+        userRepositories.get(id).orElseThrow(() -> new NotFoundException("Not found user with id = " + id));
+        Collection<Integer> friends = userRepositories.getFriends(id);
+        List<User> result = new ArrayList<>();
+        friends.forEach(f -> result.add(userRepositories.get(f).get()));
+        return result;
     }
 
     @Override
-    public Collection<Integer> getCommonFriends(int id, int otherId) {
+    public List<Integer> getCommonFriends(int id, int otherId) {
         userRepositories.get(id).orElseThrow(() -> new NotFoundException("Not found user with id = " + id));
         userRepositories.get(otherId).orElseThrow(() -> new NotFoundException("Not found other user with id = " + id));
         return userRepositories.getCommonFriends(id, otherId);

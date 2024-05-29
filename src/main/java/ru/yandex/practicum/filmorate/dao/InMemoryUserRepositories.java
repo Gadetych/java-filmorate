@@ -50,12 +50,17 @@ public class InMemoryUserRepositories implements UserRepositories {
     }
 
     @Override
-    public Optional<Collection<Integer>> getFriends(int id) {
-        return Optional.ofNullable(friends.get(id));
+    public Collection<Integer> getFriends(int id) {
+        Set<Integer> uFriends = friends.get(id);
+        if (uFriends == null) {
+            uFriends = new HashSet<>();
+        }
+        friends.put(id, uFriends);
+        return uFriends;
     }
 
     @Override
-    public Collection<Integer> getCommonFriends(int id, int otherId) {
+    public List<Integer> getCommonFriends(int id, int otherId) {
         Set<Integer> uFriendsIds = friends.get(id);
         Set<Integer> fFriendsIds = friends.get(otherId);
         if (friends.get(id) == null || friends.get(otherId) == null) {
@@ -63,7 +68,7 @@ public class InMemoryUserRepositories implements UserRepositories {
         }
         Set<Integer> commonFriendsSet = new HashSet<>(uFriendsIds);
         commonFriendsSet.retainAll(fFriendsIds);
-        return commonFriendsSet;
+        return new ArrayList<>(commonFriendsSet);
     }
 
     private Integer nextId() {

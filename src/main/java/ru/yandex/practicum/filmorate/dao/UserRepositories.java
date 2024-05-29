@@ -20,7 +20,7 @@ public interface UserRepositories {
 
     void removeFriend(int id, int friendId);
 
-    Optional<Collection<Integer>> getFriends(int id);
+    Collection<Integer> getFriends(int id);
 
-    Collection<Integer> getCommonFriends(int id, int otherId);
+    List<Integer> getCommonFriends(int id, int otherId);
 }

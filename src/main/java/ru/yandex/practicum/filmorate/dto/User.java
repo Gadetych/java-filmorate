@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.dto;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -15,6 +16,7 @@ public class User {
     @NotBlank(message = "The user login must not be blank")
     private String login;
     private String name;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthday;
 
     @AssertTrue(message = "The birthday cannot be in the future")
