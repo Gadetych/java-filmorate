@@ -60,6 +60,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void removeFriend(int id, int friendId) {
+        userRepositories.get(id).orElseThrow(() -> new NotFoundException("Not found user with id = " + id));
+        userRepositories.get(friendId).orElseThrow(() -> new NotFoundException("Not found friend with id = " + id));
+        if (userRepositories.getFriends(id) == null || userRepositories.getFriends(id).isEmpty()) {
+            return;
+        }
         userRepositories.removeFriend(id, friendId);
     }
 
