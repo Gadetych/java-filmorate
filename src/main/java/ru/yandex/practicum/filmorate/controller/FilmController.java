@@ -51,7 +51,6 @@ public class FilmController {
     }
 
     @PutMapping("/{id}/like/{userId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void likeIt(@PathVariable @Positive int id, @PathVariable @Positive int userId) {
         filmService.likeIt(id, userId);
     }

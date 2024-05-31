@@ -26,6 +26,7 @@ public class InMemoryFilmRepositories implements FilmRepositories {
     public Film add(Film film) {
         Integer id = nextId();
         film.setId(id);
+        film.setLikes(0);
         films.put(id, film);
         return film;
     }
@@ -37,6 +38,7 @@ public class InMemoryFilmRepositories implements FilmRepositories {
         if (oldFilm == null) {
             throw new NotFoundException("Film id in not found");
         }
+        film.setLikes(oldFilm.getLikes());
         films.put(id, film);
         return film;
     }
@@ -45,11 +47,13 @@ public class InMemoryFilmRepositories implements FilmRepositories {
     public void likeIt(int id, int userId) {
         Set<Integer> usersLikes = likes.computeIfAbsent(id, k -> new HashSet<>());
         usersLikes.add(userId);
+        films.get(id).setLikes(usersLikes.size());
     }
 
     @Override
     public void removeLike(int id, int userId) {
         likes.get(id).remove(userId);
+        films.get(id).setLikes(likes.get(id).size());
     }
 
     @Override
@@ -65,13 +69,11 @@ public class InMemoryFilmRepositories implements FilmRepositories {
     @Override
     public List<Film> getTopFilms(int count) {
         count = Math.min(count, likes.size());
-        List<Film> topFilms = likes.entrySet().stream()
-                .sorted(Comparator.comparingInt(entry -> entry.getValue().size()))
+        List<Film> topFilms = films.values().stream()
+                .sorted(Comparator.comparingInt(Film::getLikes).reversed())
                 .limit(count)
-                .map(Map.Entry::getKey)
-                .map(k -> films.get(k))
                 .toList();
-        return topFilms.reversed();
+        return topFilms;
     }
 
     private Integer nextId() {

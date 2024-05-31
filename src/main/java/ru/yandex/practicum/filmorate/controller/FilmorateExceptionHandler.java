@@ -27,15 +27,9 @@ public class FilmorateExceptionHandler {
         return new ExceptionResponse(e.getMessage());
     }
 
-    @ExceptionHandler
+    @ExceptionHandler({ConstraintViolationException.class, MethodArgumentNotValidException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionResponse handleBadRequest(ConstraintViolationException e) {
-        return new ExceptionResponse(e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionResponse handleMethodArgumentNotValid(MethodArgumentNotValidException e) {
+    public ExceptionResponse handleBadRequest(Exception e) {
         return new ExceptionResponse(e.getMessage());
     }
 

@@ -18,6 +18,8 @@ public class Film {
     private LocalDate releaseDate;
     @Positive
     private Integer duration;
+    @Positive
+    private Integer likes;
 
     @AssertTrue(message = "Film release date is before date 28.10.1895")
     public boolean isValidReleaseDate() {
