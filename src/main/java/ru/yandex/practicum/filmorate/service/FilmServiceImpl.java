@@ -35,6 +35,7 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public Film update(Film film) {
+        filmRepositories.get(film.getId()).orElseThrow(() -> new NotFoundException("The movie with the ID was not found: " + film.getId()));
         return filmRepositories.update(film);
     }
 

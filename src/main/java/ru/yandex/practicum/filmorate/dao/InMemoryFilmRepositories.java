@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.dao;
 
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.dto.Film;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 
 import java.util.*;
 
@@ -35,9 +34,6 @@ public class InMemoryFilmRepositories implements FilmRepositories {
     public Film update(Film film) {
         Integer id = film.getId();
         Film oldFilm = films.get(id);
-        if (oldFilm == null) {
-            throw new NotFoundException("Film id in not found");
-        }
         film.setLikes(oldFilm.getLikes());
         films.put(id, film);
         return film;
