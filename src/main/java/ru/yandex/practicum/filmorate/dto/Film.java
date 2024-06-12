@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.List;
 
 @Data
 public class Film {
@@ -15,13 +16,15 @@ public class Film {
     private String name;
     @Size(max = 200)
     private String description;
+    private List<String> genre;
+    private FilmRating rating;
     private LocalDate releaseDate;
     @Positive
     private Integer duration;
     @Positive
     private Integer likes;
 
-    @AssertTrue(message = "Film release date is before date 28.10.1895")
+    @AssertTrue(message = "Film release date is before date 28.12.1895")
     public boolean isValidReleaseDate() {
         return releaseDate.isAfter(LocalDate.of(1895, Month.DECEMBER, 28));
     }

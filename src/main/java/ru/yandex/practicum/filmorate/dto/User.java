@@ -5,6 +5,7 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 @Data
 public class User {
@@ -18,6 +19,7 @@ public class User {
     private String name;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthday;
+    private Map<Integer, FriendStatus> friendStatuses;
 
     @AssertTrue(message = "The birthday cannot be in the future")
     public boolean isValidBirthday() {
