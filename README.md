@@ -6,11 +6,9 @@ Template repository for Filmorate project.
 
 ## Примеры запросов для основных операций приложения
 
-1. Получение всех пользователей:
+1. Получение всех пользователей:  
 
-'''
 SELECT * FROM users;
-'''
 
 2. Получение пользователя по ID:
 
@@ -50,7 +48,7 @@ SELECT *
 FROM users
 
 WHERE id IN (
-SLECT user_id
+SELECT user_id
 
 	FROM likes
 
