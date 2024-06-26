@@ -17,19 +17,19 @@ SELECT * FROM users WHERE id = ?;
 
 3. Получение списка друзей пользователя:
 
-'''
+```
 SELECT freiend_id FROM friendship WHERE user_id = ? AND status = 'confirmid';
-'''
+```
 
 4. Получение всех фильмов:
 
-'''
+````
 SELECT * FROM films AS f JOIN ratings AS r f.rating_id = r.id ;
-'''
+````
 
 5. Получение фильма по ID:
 
-'''
+````
 SELECT *
 
 FROM films AS f
@@ -37,11 +37,11 @@ FROM films AS f
 INNER JOIN ratings AS r f.rating_id = r.id
 
 WHERE id = ?;
-'''
+````
 
 6. Получение списка пользователей, котрые лайкнули определенный фильм:
 
-'''
+````
 SELECT *
 
 FROM users
@@ -53,4 +53,4 @@ SELECT user_id
 
 	WHERE film_id = ?
 );
-'''
+````
