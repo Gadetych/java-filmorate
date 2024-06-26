@@ -48,9 +48,7 @@ FROM users
 
 WHERE id IN (
     SELECT user_id
-
 	FROM likes
-
 	WHERE film_id = ?
 );
 ````
