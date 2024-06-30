@@ -1,7 +1,8 @@
 package ru.yandex.practicum.filmorate.dao;
 
-import ru.yandex.practicum.filmorate.dto.User;
+import ru.yandex.practicum.filmorate.model.User;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -12,7 +13,7 @@ public interface UserRepositories {
 
     Optional<User> get(int id);
 
-    User add(User user);
+    User add(User user) throws SQLException;
 
     User update(User user);
 

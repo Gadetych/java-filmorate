@@ -1,11 +1,13 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.UserRepositories;
-import ru.yandex.practicum.filmorate.dto.User;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.model.User;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+    @Qualifier("DB")
     private final UserRepositories userRepositories;
 
     @Override
@@ -40,7 +43,11 @@ public class UserServiceImpl implements UserService {
         if (user.getName() == null) {
             user.setName(user.getLogin());
         }
-        return userRepositories.add(user);
+        try {
+            return userRepositories.add(user);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
