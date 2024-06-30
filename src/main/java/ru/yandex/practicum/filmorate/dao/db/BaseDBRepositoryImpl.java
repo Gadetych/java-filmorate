@@ -5,7 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import ru.yandex.practicum.filmorate.dao.BaseDBRepository;
-import ru.yandex.practicum.filmorate.exception.InternalServerException;
+import ru.yandex.practicum.filmorate.exception.CreateUserException;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -28,12 +28,12 @@ public class BaseDBRepositoryImpl<T> implements BaseDBRepository<T> {
         }, keyHolder);
 
         if (rowsAffected == 0) {
-            throw new InternalServerException("Failed to save user");
+            throw new CreateUserException("Failed to save user");
         }
 
         Number key = keyHolder.getKey();
         if (key == null) {
-            throw new InternalServerException("Failed to get the id from user");
+            throw new CreateUserException("Failed to get the id from user");
         }
 
         return key.intValue();
