@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.FilmRepositories;
 import ru.yandex.practicum.filmorate.dao.UserRepositories;
-import ru.yandex.practicum.filmorate.dto.Film;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.ArrayList;
 import java.util.Collection;
