@@ -2,7 +2,7 @@ package ru.yandex.practicum.filmorate.dao;
 
 import java.util.Optional;
 
-public interface BaseDBRepositories<T> {
+public interface BaseDBRepository<T> {
     int insert(String sql, Object... params);
 
     Optional<T> selectOne(String sql, Object... params);

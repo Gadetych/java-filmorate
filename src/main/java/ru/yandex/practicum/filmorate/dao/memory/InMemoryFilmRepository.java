@@ -1,13 +1,13 @@
 package ru.yandex.practicum.filmorate.dao.memory;
 
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.dao.FilmRepositories;
+import ru.yandex.practicum.filmorate.dao.FilmRepository;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.*;
 
 @Repository
-public class InMemoryFilmRepositories implements FilmRepositories {
+public class InMemoryFilmRepository implements FilmRepository {
     Map<Integer, Film> films = new HashMap<>();
     Map<Integer, Set<Integer>> likes = new HashMap<>();
     private Integer maxId = 0;

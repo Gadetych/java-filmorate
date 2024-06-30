@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-public interface FilmRepositories {
+public interface FilmRepository {
 
     List<Film> getFilms();
 

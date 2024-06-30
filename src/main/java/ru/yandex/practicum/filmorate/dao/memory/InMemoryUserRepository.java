@@ -2,14 +2,14 @@ package ru.yandex.practicum.filmorate.dao.memory;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.dao.UserRepositories;
+import ru.yandex.practicum.filmorate.dao.UserRepository;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.*;
 
 @Repository
 @Qualifier("memory")
-public class InMemoryUserRepositories implements UserRepositories {
+public class InMemoryUserRepository implements UserRepository {
     Map<Integer, User> users = new HashMap<>();
     Map<Integer, Set<Integer>> friends = new HashMap<>();
     Integer maxId = 0;

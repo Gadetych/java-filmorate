@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
-import ru.yandex.practicum.filmorate.dao.BaseDBRepositories;
+import ru.yandex.practicum.filmorate.dao.BaseDBRepository;
 import ru.yandex.practicum.filmorate.exception.InternalServerException;
 
 import java.sql.PreparedStatement;
@@ -12,7 +12,7 @@ import java.sql.Statement;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class BaseDBRepositoriesImpl<T> implements BaseDBRepositories<T> {
+public class BaseDBRepositoryImpl<T> implements BaseDBRepository<T> {
     protected final JdbcTemplate jdbcTemplate;
     protected final RowMapper<T> mapper;
 

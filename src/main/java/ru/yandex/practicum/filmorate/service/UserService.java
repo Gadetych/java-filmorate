@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.service;
 
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public interface UserService {
@@ -11,7 +10,7 @@ public interface UserService {
 
     User get(int id);
 
-    User add(User user) throws SQLException;
+    User add(User user);
 
     User update(User user);
 
