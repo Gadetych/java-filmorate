@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.dao.db;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -13,7 +12,6 @@ import java.sql.Statement;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-@Qualifier("DB")
 public class BaseDBRepositoriesImpl<T> implements BaseDBRepositories<T> {
     protected final JdbcTemplate jdbcTemplate;
     protected final RowMapper<T> mapper;

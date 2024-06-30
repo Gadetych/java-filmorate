@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.model.Marker;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -40,7 +41,12 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public User add(@RequestBody @Valid User user) {
         log.info("==> POST /users {}", user);
-        User newUser = userService.add(user);
+        User newUser = null;
+        try {
+            newUser = userService.add(user);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         log.info("<== Added user: {}", user);
         return newUser;
     }

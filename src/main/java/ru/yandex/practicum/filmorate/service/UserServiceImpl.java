@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.dao.UserRepositories;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -42,7 +43,11 @@ public class UserServiceImpl implements UserService {
         if (user.getName() == null) {
             user.setName(user.getLogin());
         }
-        return userRepositories.add(user);
+        try {
+            return userRepositories.add(user);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
