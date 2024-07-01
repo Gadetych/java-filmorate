@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.exception.CreateUserException;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -46,8 +47,8 @@ public class BaseDBRepositoryImpl<T> implements BaseDBRepository<T> {
     }
 
     @Override
-    public int selectMore(String sql, Object... params) {
-        return 0;
+    public List<T> selectMore(String sql, Object... params) {
+        return jdbcTemplate.query(sql, params, mapper);
     }
 
     @Override

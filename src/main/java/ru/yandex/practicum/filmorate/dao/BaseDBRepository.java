@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.dao;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface BaseDBRepository<T> {
@@ -7,7 +8,7 @@ public interface BaseDBRepository<T> {
 
     Optional<T> selectOne(String sql, Object... params);
 
-    int selectMore(String sql, Object... params);
+    List<T> selectMore(String sql, Object... params);
 
     int update(String sql, Object... params);
 

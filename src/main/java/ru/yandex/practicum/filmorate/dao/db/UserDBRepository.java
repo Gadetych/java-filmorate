@@ -25,7 +25,8 @@ public class UserDBRepository extends BaseDBRepositoryImpl<User> implements User
 
     @Override
     public List<User> getUsers() {
-        return List.of();
+        String sql = "SELECT * FROM users";
+        return selectMore(sql);
     }
 
     @Override
