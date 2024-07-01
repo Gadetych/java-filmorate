@@ -49,7 +49,9 @@ public class UserDBRepository extends BaseDBRepositoryImpl<User> implements User
 
     @Override
     public User update(User user) {
-        return null;
+        String sql = "UPDATE users SET email = ?, login = ?, name = ?, birthday = ? WHERE id = ?";
+        update(sql, user.getEmail(), user.getLogin(), user.getName(), user.getBirthday(), user.getId());
+        return user;
     }
 
     @Override

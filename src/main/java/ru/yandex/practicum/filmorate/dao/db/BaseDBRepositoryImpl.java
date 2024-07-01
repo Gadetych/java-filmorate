@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import ru.yandex.practicum.filmorate.dao.BaseDBRepository;
 import ru.yandex.practicum.filmorate.exception.CreateUserException;
+import ru.yandex.practicum.filmorate.exception.UpdateUserException;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -52,9 +53,11 @@ public class BaseDBRepositoryImpl<T> implements BaseDBRepository<T> {
     }
 
     @Override
-    public int update(String sql, Object... params) {
-
-        return 0;
+    public void update(String sql, Object... params) {
+        int rowsUpdated = jdbcTemplate.update(sql, params);
+        if (rowsUpdated == 0) {
+            throw new UpdateUserException("Failed to update user");
+        }
     }
 
     @Override
