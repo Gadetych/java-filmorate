@@ -28,8 +28,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new NotFoundException("The user with the ID was not found " + id));
     }
 
-    private boolean checkUserExists(User user) {
-        Integer id = user.getId();
+    private boolean checkUserExists(Integer id) {
         if (id == null) {
             return false;
         }
@@ -47,10 +46,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User update(User user) {
-        if (!checkUserExists(user)) {
+        if (!checkUserExists(user.getId())) {
             throw new NotFoundException("Not found user with id = " + user.getId());
         }
         return userRepository.update(user);
+    }
+
+    @Override
+    public void remove(int id) {
+        if (!checkUserExists(id)) {
+            throw new NotFoundException("Not found user with id = " + id);
+        }
+        userRepository.delete(id);
     }
 
     @Override

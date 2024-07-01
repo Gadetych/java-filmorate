@@ -55,6 +55,14 @@ public class UserController {
         return newUser;
     }
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeById(@PathVariable @Positive int id) {
+        log.info("==> DELETE /users/{id}", id);
+        userService.remove(id);
+        log.info("<== Deleted user: {}", id);
+    }
+
     @PutMapping("/{id}/friends/{friendId}")
     public void addFriends(@PathVariable @Positive int id, @PathVariable @Positive int friendId) {
         log.info("==> POST /users/{}/friends/{}", id, friendId);
@@ -66,6 +74,7 @@ public class UserController {
     public void removeFriend(@PathVariable @Positive int id, @PathVariable @Positive int friendId) {
         log.info("==> DELETE /users/{}/friends/{}", id, friendId);
         userService.removeFriend(id, friendId);
+        log.info("<== Removed user: {}", id);
     }
 
     @GetMapping("/{id}/friends")

@@ -39,6 +39,11 @@ public class InMemoryUserRepository implements UserRepository {
     }
 
     @Override
+    public void delete(int id) {
+
+    }
+
+    @Override
     public void addFriend(int id, int friendId) {
         Set<Integer> uFriendsIds = friends.computeIfAbsent(id, k -> new HashSet<>());
         uFriendsIds.add(friendId);
