@@ -53,6 +53,11 @@ public class BaseDBRepositoryImpl<T> implements BaseDBRepository<T> {
     }
 
     @Override
+    public List<Integer> selectMoreInt(String sql, Object... params) {
+        return jdbcTemplate.queryForList(sql, Integer.class, params);
+    }
+
+    @Override
     public void update(String sql, Object... params) {
         int rowsUpdated = jdbcTemplate.update(sql, params);
         if (rowsUpdated == 0) {

@@ -10,6 +10,8 @@ public interface BaseDBRepository<T> {
 
     List<T> selectMore(String sql, Object... params);
 
+    List<Integer> selectMoreInt(String sql, Object... params);
+
     void update(String sql, Object... params);
 
     void delete(String sql,int id);

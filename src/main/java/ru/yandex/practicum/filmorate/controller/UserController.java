@@ -58,7 +58,7 @@ public class UserController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeById(@PathVariable @Positive int id) {
-        log.info("==> DELETE /users/{id}", id);
+        log.info("==> DELETE /users/{}", id);
         userService.remove(id);
         log.info("<== Deleted user: {}", id);
     }
@@ -67,6 +67,7 @@ public class UserController {
     public void addFriends(@PathVariable @Positive int id, @PathVariable @Positive int friendId) {
         log.info("==> POST /users/{}/friends/{}", id, friendId);
         userService.addFriend(id, friendId);
+        log.info("<== Added friend: {}", id);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")

@@ -60,10 +60,12 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(id);
     }
 
+    //    Может здесь нужен другой репозиторий?
     @Override
     public void addFriend(int id, int friendId) {
         userRepository.get(id).orElseThrow(() -> new NotFoundException("Not found user with id = " + id));
         userRepository.get(friendId).orElseThrow(() -> new NotFoundException("Not found friend with id = " + friendId));
+
         userRepository.addFriend(id, friendId);
     }
 
