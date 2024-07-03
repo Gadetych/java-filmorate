@@ -86,6 +86,10 @@ public class UserDBRepository extends BaseDBRepositoryImpl<User> implements User
 
     @Override
     public List<Integer> getCommonFriends(int id, int otherId) {
-        return List.of();
+        String query = "SELECT f1.friend_id\n" +
+                "FROM FRIENDSHIP AS f1\n" +
+                "INNER JOIN FRIENDSHIP AS f2 ON f1.FRIEND_ID = f2.FRIEND_ID\n" +
+                "WHERE f1.USER_ID = ? AND f2.USER_ID = ?;";
+        return selectMoreInt(query, id, otherId);
     }
 }
