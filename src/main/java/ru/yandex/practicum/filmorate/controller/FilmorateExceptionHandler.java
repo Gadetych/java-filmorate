@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -14,11 +15,10 @@ import ru.yandex.practicum.filmorate.model.ExceptionResponse;
 @RestControllerAdvice("ru.yandex.practicum.filmorate")
 @Validated
 public class FilmorateExceptionHandler {
-//    IllegalArgumentException, InternalServerException
 
-    @ExceptionHandler
+    @ExceptionHandler({DataAccessException.class, NotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ExceptionResponse handleNotFound(NotFoundException e) {
+    public ExceptionResponse handleNotFound(RuntimeException e) {
         return new ExceptionResponse(e.getMessage());
     }
 

@@ -55,7 +55,7 @@ public class UserDBRepository extends BaseDBRepositoryImpl<User> implements User
     }
 
     @Override
-    public void delete(int id) {
+    public void remove(int id) {
         String sql = "DELETE FROM users WHERE id = ?;";
         delete(sql, id);
     }
@@ -74,7 +74,8 @@ public class UserDBRepository extends BaseDBRepositoryImpl<User> implements User
 
     @Override
     public void removeFriend(int id, int friendId) {
-
+        String queryDelete = "DELETE FROM friendship WHERE user_id = ? AND friend_id = ?;";
+        delete(queryDelete, id, friendId);
     }
 
     @Override

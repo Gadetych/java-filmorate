@@ -66,7 +66,7 @@ public class BaseDBRepositoryImpl<T> implements BaseDBRepository<T> {
     }
 
     @Override
-    public void delete(String sql, int id) {
-        jdbcTemplate.update(sql, id);
+    public void delete(String sql, Object... params) {
+        jdbcTemplate.update(sql, params);
     }
 }

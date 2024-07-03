@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
         if (!checkUserExists(id)) {
             throw new NotFoundException("Not found user with id = " + id);
         }
-        userRepository.delete(id);
+        userRepository.remove(id);
     }
 
     //    Может здесь нужен другой репозиторий?

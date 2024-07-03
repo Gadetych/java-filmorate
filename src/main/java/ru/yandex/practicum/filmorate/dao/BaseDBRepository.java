@@ -14,5 +14,5 @@ public interface BaseDBRepository<T> {
 
     void update(String sql, Object... params);
 
-    void delete(String sql,int id);
+    void delete(String sql, Object... params);
 }

@@ -39,7 +39,7 @@ public class InMemoryUserRepository implements UserRepository {
     }
 
     @Override
-    public void delete(int id) {
+    public void remove(int id) {
 
     }
 
