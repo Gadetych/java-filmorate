@@ -1,18 +1,18 @@
 package ru.yandex.practicum.filmorate.service;
 
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.dto.UserDto;
 
 import java.util.List;
 
 public interface UserService {
 
-    List<User> getUsers();
+    List<UserDto> getUsers();
 
-    User get(int id);
+    UserDto get(int id);
 
-    User add(User user);
+    UserDto add(UserDto user);
 
-    User update(User user);
+    UserDto update(UserDto user);
 
     void remove(int id);
 
@@ -20,7 +20,7 @@ public interface UserService {
 
     void removeFriend(int id, int friendId);
 
-    List<User> getFriends(int id);
+    List<UserDto> getFriends(int id);
 
-    List<User> getCommonFriends(int id, int otherId);
+    List<UserDto> getCommonFriends(int id, int otherId);
 }

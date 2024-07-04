@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.UserRepository;
+import ru.yandex.practicum.filmorate.dto.UserDto;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.mapper.UserMapper;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.ArrayList;
@@ -16,16 +18,22 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     @Qualifier("DB")
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Override
-    public List<User> getUsers() {
-        return userRepository.getUsers();
+    public List<UserDto> getUsers() {
+        List<UserDto> usersDto = userRepository.getUsers().stream()
+                .map(user -> userMapper.modelToDto(user))
+                .toList();
+        return usersDto;
     }
 
     @Override
-    public User get(int id) {
-        return userRepository.get(id)
+    public UserDto get(int id) {
+        User user = userRepository.get(id)
                 .orElseThrow(() -> new NotFoundException("The user with the ID was not found " + id));
+        UserDto userDto = userMapper.modelToDto(user);
+        return userDto;
     }
 
     private boolean checkUserExists(Integer id) {
@@ -37,19 +45,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User add(User user) {
-        if (user.getName() == null) {
-            user.setName(user.getLogin());
+    public UserDto add(UserDto userDto) {
+        if (userDto.getName() == null) {
+            userDto.setName(userDto.getLogin());
         }
-        return userRepository.add(user);
+        User user = userMapper.dtoToModel(userDto);
+        user = userRepository.add(user);
+        UserDto userDtoWithId = userMapper.modelToDto(user);
+        return userDtoWithId;
     }
 
     @Override
-    public User update(User user) {
-        if (!checkUserExists(user.getId())) {
-            throw new NotFoundException("Not found user with id = " + user.getId());
+    public UserDto update(UserDto userDto) {
+        if (!checkUserExists(userDto.getId())) {
+            throw new NotFoundException("Not found user with id = " + userDto.getId());
         }
-        return userRepository.update(user);
+        User user = userMapper.dtoToModel(userDto);
+        user = userRepository.update(user);
+        UserDto newUserDto = userMapper.modelToDto(user);
+        return newUserDto;
     }
 
     @Override
@@ -80,21 +94,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getFriends(int id) {
+    public List<UserDto> getFriends(int id) {
         userRepository.get(id).orElseThrow(() -> new NotFoundException("Not found user with id = " + id));
         Collection<Integer> friends = userRepository.getFriends(id);
-        List<User> result = new ArrayList<>();
-        friends.forEach(f -> result.add(userRepository.get(f).get()));
+        List<UserDto> result = new ArrayList<>();
+        friends.forEach(f -> result.add(userMapper.modelToDto(userRepository.get(f).get())));
         return result;
     }
 
     @Override
-    public List<User> getCommonFriends(int id, int otherId) {
+    public List<UserDto> getCommonFriends(int id, int otherId) {
         userRepository.get(id).orElseThrow(() -> new NotFoundException("Not found user with id = " + id));
         userRepository.get(otherId).orElseThrow(() -> new NotFoundException("Not found other user with id = " + id));
-        List<User> result = new ArrayList<>();
+        List<UserDto> result = new ArrayList<>();
         List<Integer> commonFriendsIds = userRepository.getCommonFriends(id, otherId);
-        commonFriendsIds.forEach(f -> result.add(userRepository.get(f).get()));
+        commonFriendsIds.forEach(f -> result.add(userMapper.modelToDto(userRepository.get(f).get())));
         return result;
     }
 }
