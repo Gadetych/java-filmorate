@@ -1,12 +1,14 @@
 package ru.yandex.practicum.filmorate.dao.memory;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.dao.FilmRepository;
-import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.film.Film;
 
 import java.util.*;
 
 @Repository
+@Qualifier("memory")
 public class InMemoryFilmRepository implements FilmRepository {
     Map<Integer, Film> films = new HashMap<>();
     Map<Integer, Set<Integer>> likes = new HashMap<>();

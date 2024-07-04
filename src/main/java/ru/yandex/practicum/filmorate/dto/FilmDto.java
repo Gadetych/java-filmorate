@@ -1,14 +1,16 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.dto;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
+import ru.yandex.practicum.filmorate.model.Marker;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.List;
+import java.util.Set;
 
 @Data
-public class Film {
+public class FilmDto {
     @Null(groups = Marker.Create.class, message = "The film id must be blank")
     @NotNull(groups = Marker.Update.class, message = "The film id must not be blank")
     private Integer id;
@@ -16,8 +18,11 @@ public class Film {
     private String name;
     @Size(max = 200)
     private String description;
-    private List<String> genre;
-    private FilmRating rating;
+    @NotNull
+    private Set<GenreDto> genres;
+    @NotNull
+    private MpaDto mpa;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate releaseDate;
     @Positive
     private Integer duration;

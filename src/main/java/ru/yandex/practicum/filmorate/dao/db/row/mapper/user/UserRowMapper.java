@@ -1,9 +1,9 @@
-package ru.yandex.practicum.filmorate.dao.db.mapper;
+package ru.yandex.practicum.filmorate.dao.db.row.mapper.user;
 
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.MapperException;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.user.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,7 +21,7 @@ public class UserRowMapper implements RowMapper {
             user.setBirthday(rs.getDate("BIRTHDAY").toLocalDate());
             return user;
         } catch (SQLException e) {
-            throw new MapperException("Could not map row " + rowNum, e);
+            throw new MapperException("Could not map user row " + rowNum, e);
         }
     }
 }

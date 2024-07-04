@@ -1,8 +1,9 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.model.user;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
+import ru.yandex.practicum.filmorate.model.Marker;
 
 import java.time.LocalDate;
 

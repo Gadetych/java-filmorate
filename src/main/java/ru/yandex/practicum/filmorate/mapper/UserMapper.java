@@ -2,11 +2,12 @@ package ru.yandex.practicum.filmorate.mapper;
 
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dto.UserDto;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.user.User;
 
 @Component
-public class UserMapper {
+public class UserMapper implements Mapper<User, UserDto> {
 
+    @Override
     public User dtoToModel(UserDto userDto) {
         User user = new User();
         user.setId(userDto.getId());
@@ -17,6 +18,7 @@ public class UserMapper {
         return user;
     }
 
+    @Override
     public UserDto modelToDto(User user) {
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());
