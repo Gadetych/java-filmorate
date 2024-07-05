@@ -5,11 +5,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.dao.FilmRepository;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.film.Film;
+import ru.yandex.practicum.filmorate.model.film.Genre;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 @Qualifier("DB")
@@ -19,15 +19,36 @@ public class FilmDBRepository extends BaseDBRepositoryImpl<Film> implements Film
         super(jdbcTemplate, mapper);
     }
 
+    private Set<Genre> getGenres(Film film) {
+        String getGenreId = "SELECT genre_id FROM film_genre WHERE film_id = ?;";
+        Integer filmId = film.getId();
+        Set<Genre> genres = new HashSet<>();
+        Set<Integer> genreIds = Set.copyOf(selectMoreInt(getGenreId, filmId));
+        for (Integer genreId : genreIds) {
+            Genre genre = new Genre();
+            genre.setId(genreId);
+            genres.add(genre);
+        }
+        return genres;
+    }
+
     @Override
     public List<Film> getFilms() {
-        return List.of();
+        String query = "SELECT * FROM films;";
+        List<Film> result = selectMore(query);
+        for (Film film : result) {
+            film.setGenres(getGenres(film));
+        }
+
+        return result;
     }
 
     @Override
     public Optional<Film> get(int id) {
         String query = "SELECT * FROM films WHERE id = ?;";
-        return Optional.empty();
+        Film film = selectOne(query, id).orElseThrow(() -> new NotFoundException("Film not found with id " + id));
+        film.setGenres(getGenres(film));
+        return Optional.of(film);
     }
 
     @Override

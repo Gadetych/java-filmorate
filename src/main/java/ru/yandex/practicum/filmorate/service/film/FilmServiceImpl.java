@@ -6,16 +6,17 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.FilmRepository;
 import ru.yandex.practicum.filmorate.dao.UserRepository;
 import ru.yandex.practicum.filmorate.dto.FilmDto;
+import ru.yandex.practicum.filmorate.dto.GenreDto;
 import ru.yandex.practicum.filmorate.dto.MpaDto;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.service.GenreService;
 import ru.yandex.practicum.filmorate.service.MpaService;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,21 +25,40 @@ public class FilmServiceImpl implements FilmService {
     private final FilmRepository filmRepository;
     @Qualifier("DB")
     private final UserRepository userRepository;
+
     private final MpaService mpaService;
+    private final GenreService genreService;
 
     private final FilmMapper filmMapper;
+
+    private MpaDto getMpaDto(FilmDto dto) {
+        int mpaId = dto.getMpa().getId();
+        MpaDto mpaDto = mpaService.getById(mpaId);
+        return mpaDto;
+    }
+
+    private Set<GenreDto> getSetGenreDto(FilmDto dto) {
+        Set<GenreDto> genreDtoSet = dto.getGenres().stream()
+                .map(genreDto -> {
+                    int genreId = genreDto.getId();
+                    return genreService.getById(genreId);
+                })
+                .sorted(Comparator.comparingInt(GenreDto::getId))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        return genreDtoSet;
+    }
 
     @Override
     public List<FilmDto> getFilms() {
         List<Film> films = filmRepository.getFilms();
-        List<FilmDto> filmDtoList = films.stream()
-                .map(filmMapper::modelToDto)
-                .peek(dto -> {
-                    int mpaId = dto.getMpa().getId();
-                    MpaDto mpaDto = mpaService.getById(mpaId);
-                    dto.setMpa(mpaDto);
-                })
-                .toList();
+        List<FilmDto> filmDtoList = null;
+        if (films != null) {
+            filmDtoList = films.stream()
+                    .map(filmMapper::modelToDto)
+                    .peek(dto -> dto.setMpa(getMpaDto(dto)))
+                    .peek(dto -> dto.setGenres(getSetGenreDto(dto)))
+                    .toList();
+        }
         return filmDtoList;
     }
 
@@ -47,9 +67,8 @@ public class FilmServiceImpl implements FilmService {
         Film model = filmRepository.get(id)
                 .orElseThrow(() -> new NotFoundException("The movie with the ID was not found: " + id));
         FilmDto dto = filmMapper.modelToDto(model);
-        int mpaId = dto.getMpa().getId();
-        MpaDto mpaDto = mpaService.getById(mpaId);
-        dto.setMpa(mpaDto);
+        dto.setMpa(getMpaDto(dto));
+        dto.setGenres(getSetGenreDto(dto));
         return dto;
     }
 
@@ -58,11 +77,9 @@ public class FilmServiceImpl implements FilmService {
         Film film = filmMapper.dtoToModel(filmDto);
         film = filmRepository.add(film);
         filmDto = filmMapper.modelToDto(film);
-        int mpaId = filmDto.getMpa().getId();
-        MpaDto mpaDto = mpaService.getById(mpaId);
-        filmDto.setMpa(mpaDto);
-//        Set<Genre> genres = new HashSet<>();
-//        film.setGenres();
+
+        filmDto.setMpa(getMpaDto(filmDto));
+        filmDto.setGenres(getSetGenreDto(filmDto));
         return filmDto;
     }
 
