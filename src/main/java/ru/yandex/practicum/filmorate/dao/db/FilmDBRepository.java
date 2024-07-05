@@ -34,7 +34,7 @@ public class FilmDBRepository extends BaseDBRepositoryImpl<Film> implements Film
     public Film add(Film film) {
         String createFilm = "INSERT INTO films (name, description, realise_date, duration, count_likes, rating_id) " +
                 "VALUES (?, ?, ?, ?, ?, ?);";
-        int id = insert(createFilm, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(), film.getLikes(), film.getMpa());
+        int id = insert(createFilm, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(), film.getLikes(), film.getMpa().getId());
         film.setId(id);
         return film;
     }

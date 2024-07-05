@@ -5,14 +5,17 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.FilmRepository;
 import ru.yandex.practicum.filmorate.dao.UserRepository;
-import ru.yandex.practicum.filmorate.dao.db.MpaDBRepository;
+import ru.yandex.practicum.filmorate.dto.FilmDto;
+import ru.yandex.practicum.filmorate.dto.MpaDto;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.model.film.Film;
-import ru.yandex.practicum.filmorate.model.film.Genre;
-import ru.yandex.practicum.filmorate.model.film.Mpa;
 import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.service.MpaService;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -21,34 +24,55 @@ public class FilmServiceImpl implements FilmService {
     private final FilmRepository filmRepository;
     @Qualifier("DB")
     private final UserRepository userRepository;
-    private final MpaDBRepository mpaRepository;
+    private final MpaService mpaService;
+
+    private final FilmMapper filmMapper;
 
     @Override
-    public List<Film> getFilms() {
-        return filmRepository.getFilms();
+    public List<FilmDto> getFilms() {
+        List<Film> films = filmRepository.getFilms();
+        List<FilmDto> filmDtoList = films.stream()
+                .map(filmMapper::modelToDto)
+                .peek(dto -> {
+                    int mpaId = dto.getMpa().getId();
+                    MpaDto mpaDto = mpaService.getById(mpaId);
+                    dto.setMpa(mpaDto);
+                })
+                .toList();
+        return filmDtoList;
     }
 
     @Override
-    public Film get(int id) {
-        return filmRepository.get(id)
+    public FilmDto get(int id) {
+        Film model = filmRepository.get(id)
                 .orElseThrow(() -> new NotFoundException("The movie with the ID was not found: " + id));
+        FilmDto dto = filmMapper.modelToDto(model);
+        int mpaId = dto.getMpa().getId();
+        MpaDto mpaDto = mpaService.getById(mpaId);
+        dto.setMpa(mpaDto);
+        return dto;
     }
 
     @Override
-    public Film add(Film film) {
+    public FilmDto add(FilmDto filmDto) {
+        Film film = filmMapper.dtoToModel(filmDto);
         film = filmRepository.add(film);
-        int mpaId = film.getMpa().getId();
-        Mpa mpa = mpaRepository.getById(mpaId).orElseThrow(() -> new NotFoundException("The mpa with the ID was not found: " + mpaId));
-        film.setMpa(mpa);
-        Set<Genre> genres = new HashSet<>();
+        filmDto = filmMapper.modelToDto(film);
+        int mpaId = filmDto.getMpa().getId();
+        MpaDto mpaDto = mpaService.getById(mpaId);
+        filmDto.setMpa(mpaDto);
+//        Set<Genre> genres = new HashSet<>();
 //        film.setGenres();
-        return film;
+        return filmDto;
     }
 
     @Override
-    public Film update(Film film) {
-        filmRepository.get(film.getId()).orElseThrow(() -> new NotFoundException("The movie with the ID was not found: " + film.getId()));
-        return filmRepository.update(film);
+    public FilmDto update(FilmDto dto) {
+        filmRepository.get(dto.getId()).orElseThrow(() -> new NotFoundException("The movie with the ID was not found: " + dto.getId()));
+        Film model = filmMapper.dtoToModel(dto);
+        model = filmRepository.update(model);
+        dto = filmMapper.modelToDto(model);
+        return dto;
     }
 
     @Override
@@ -71,16 +95,20 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public List<Film> getLikes(int id) {
+    public List<FilmDto> getLikes(int id) {
         filmRepository.get(id).orElseThrow(() -> new NotFoundException("Not found film with id = " + id));
         Collection<Integer> likes = filmRepository.getLikes(id);
-        List<Film> result = new ArrayList<>();
-        likes.forEach(f -> result.add(filmRepository.get(f).get()));
+        List<FilmDto> result = new ArrayList<>();
+        likes.forEach(f -> result.add(get(f)));
         return result;
     }
 
     @Override
-    public List<Film> getTopFilms(int count) {
-        return filmRepository.getTopFilms(count);
+    public List<FilmDto> getTopFilms(int count) {
+        List<Film> modelList = filmRepository.getTopFilms(count);
+        List<FilmDto> dtoList = modelList.stream()
+                .map(filmMapper::modelToDto)
+                .toList();
+        return dtoList;
     }
 }
