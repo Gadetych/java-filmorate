@@ -14,5 +14,5 @@ ALTER TABLE ratings ALTER COLUMN ID RESTART WITH 1;
 SET REFERENTIAL_INTEGRITY TRUE;
 
 INSERT INTO ratings (name) VALUES('G'), ('PG'), ('PG-13'), ('R'), ('NC-17');
-INSERT INTO genres (title) VALUES('Боевик'), ('Комедия'), ('Драмма');
+INSERT INTO genres (title) VALUES('Комедия'), ('Драма'), ('Мультфильм'), ('Триллер'), ('Документальный'), ('Боевик');
 

@@ -68,7 +68,8 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public FilmDto update(FilmDto dto) {
-        filmRepository.get(dto.getId()).orElseThrow(() -> new NotFoundException("The movie with the ID was not found: " + dto.getId()));
+        int id = dto.getId();
+        filmRepository.get(id).orElseThrow(() -> new NotFoundException("The movie with the ID was not found: " + id));
         Film model = filmMapper.dtoToModel(dto);
         model = filmRepository.update(model);
         dto = filmMapper.modelToDto(model);

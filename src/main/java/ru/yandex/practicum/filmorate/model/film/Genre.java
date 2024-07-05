@@ -9,5 +9,5 @@ public class Genre {
     @Positive
     @NotNull
     private Integer id;
-    private String name;
+    private String title;
 }
