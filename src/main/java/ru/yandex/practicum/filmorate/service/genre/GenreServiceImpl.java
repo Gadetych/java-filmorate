@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.db.GenreDBRepository;
 import ru.yandex.practicum.filmorate.dto.GenreDto;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.exception.IncorrectGenreException;
 import ru.yandex.practicum.filmorate.mapper.GenreMapper;
 import ru.yandex.practicum.filmorate.model.film.Genre;
 import ru.yandex.practicum.filmorate.service.GenreService;
@@ -30,7 +30,7 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     public GenreDto getById(int id) {
-        Genre model = repository.getById(id).orElseThrow(() -> new NotFoundException("The genre with the ID was not found: " + id));
+        Genre model = repository.getById(id).orElseThrow(() -> new IncorrectGenreException("The genre with the ID was not found: " + id));
         GenreDto dto = mapper.modelToDto(model);
         return dto;
     }
