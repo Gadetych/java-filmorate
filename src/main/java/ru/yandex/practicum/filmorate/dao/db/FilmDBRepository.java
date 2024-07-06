@@ -67,7 +67,22 @@ public class FilmDBRepository extends BaseDBRepositoryImpl<Film> implements Film
 
     @Override
     public Film update(Film film) {
-        return null;
+        String queryUpdateFilm = "UPDATE films SET name = ?, description = ?, realise_date = ?, duration = ?, count_likes = ?, rating_id = ? WHERE id = ?";
+        update(queryUpdateFilm, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(), film.getLikes(), film.getMpa().getId(), film.getId());
+
+        Set<Genre> genres = film.getGenres();
+        if (genres != null) {
+            String queryDeleteFilmGenres = "DELETE FROM film_genre WHERE film_id = ?;";
+            for (Genre genre : genres) {
+                delete(queryDeleteFilmGenres, genre.getId());
+            }
+
+            String queryUpdateFilmGenre = "UPDATE film_genre SET film_id = ?, genre_id = ? WHERE genre_id = ?";
+            for (Genre genre : genres) {
+                update(queryUpdateFilmGenre, film.getId(), genre.getId());
+            }
+        }
+        return film;
     }
 
     @Override

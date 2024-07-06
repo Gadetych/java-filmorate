@@ -18,7 +18,6 @@ public class Film {
     private String name;
     @Size(max = 200)
     private String description;
-    @NotNull
     private Set<Genre> genres;
     @NotNull
     private Mpa mpa;

@@ -18,7 +18,6 @@ public class FilmDto {
     private String name;
     @Size(max = 200)
     private String description;
-    @NotNull
     private Set<GenreDto> genres;
     @NotNull
     private MpaDto mpa;
