@@ -38,7 +38,11 @@ public class FilmServiceImpl implements FilmService {
     }
 
     private Set<GenreDto> getSetGenreDto(FilmDto dto) {
-        Set<GenreDto> genreDtoSet = dto.getGenres().stream()
+        Set<GenreDto> genreDtoSet = dto.getGenres();
+        if (genreDtoSet == null) {
+            return genreDtoSet;
+        }
+        genreDtoSet = genreDtoSet.stream()
                 .map(genreDto -> {
                     int genreId = genreDto.getId();
                     return genreService.getById(genreId);

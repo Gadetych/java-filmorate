@@ -57,10 +57,11 @@ public class FilmDBRepository extends BaseDBRepositoryImpl<Film> implements Film
                 "VALUES (?, ?, ?, ?, ?, ?);";
         int id = insert(createFilm, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(), film.getLikes(), film.getMpa().getId());
         film.setId(id);
-
-        String query = "INSERT INTO film_genre (film_id, genre_id) VALUES (?, ?);";
-        for (Genre genre : film.getGenres()) {
-            insert(query, id, genre.getId());
+        if (film.getGenres() != null) {
+            String query = "INSERT INTO film_genre (film_id, genre_id) VALUES (?, ?);";
+            for (Genre genre : film.getGenres()) {
+                insert(query, id, genre.getId());
+            }
         }
         return film;
     }

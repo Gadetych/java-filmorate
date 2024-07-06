@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class GenreDBRepository extends BaseDBRepositoryImpl<Genre>{
+public class GenreDBRepository extends BaseDBRepositoryImpl<Genre> {
 
     public GenreDBRepository(JdbcTemplate jdbcTemplate, RowMapper<Genre> mapper) {
         super(jdbcTemplate, mapper);
