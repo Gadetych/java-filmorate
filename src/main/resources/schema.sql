@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS films
     description  VARCHAR(200),
     realise_date DATE,
     duration     INTEGER CHECK (duration > 0),
-    count_likes  INTEGER CHECK (count_likes > 0),
+    count_likes  INTEGER CHECK (count_likes >= 0),
     rating_id    INTEGER REFERENCES RATINGS (ID)
 );
 

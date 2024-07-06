@@ -77,7 +77,7 @@ public class FilmDBRepository extends BaseDBRepositoryImpl<Film> implements Film
                 delete(queryDeleteFilmGenres, genre.getId());
             }
 
-            String queryUpdateFilmGenre = "UPDATE film_genre SET film_id = ?, genre_id = ? WHERE genre_id = ?";
+            String queryUpdateFilmGenre = "UPDATE film_genre SET film_id = ?, genre_id = ? WHERE genre_id = ?;";
             for (Genre genre : genres) {
                 update(queryUpdateFilmGenre, film.getId(), genre.getId());
             }
@@ -87,21 +87,42 @@ public class FilmDBRepository extends BaseDBRepositoryImpl<Film> implements Film
 
     @Override
     public void likeIt(int id, int userId) {
-
+        String query = "INSERT INTO likes (film_id, user_id) VALUES (?, ?);";
+        insert(query, id, userId);
+        String updateLikes = "UPDATE films SET count_likes = count_likes + 1 WHERE id = ?;";
+        update(updateLikes, id);
     }
 
     @Override
     public void removeLike(int id, int userId) {
-
+        String query = "DELETE FROM likes WHERE film_id = ? AND user_id = ?;";
+        delete(query, id, userId);
+        String updateLikes = "UPDATE films SET count_likes = count_likes - 1 WHERE id = ?;";
+        update(updateLikes, id);
     }
 
     @Override
     public Collection<Integer> getLikes(int id) {
-        return List.of();
+        String query = "SELECT user_id FROM likes WHERE film_id = ?;";
+        List<Integer> likes = selectMoreInt(query, id);
+        return likes;
     }
 
     @Override
     public List<Film> getTopFilms(int count) {
-        return List.of();
+//        String query = "SELECT *\n" +
+//                "FROM films\n" +
+//                "WHERE id IN (\n" +
+//                "    SELECT film_id\n" +
+//                "    FROM likes\n" +
+//                "    GROUP BY film_id\n" +
+//                "    ORDER BY COUNT(user_id) DESC\n" +
+//                "    LIMIT ?);";
+        String query = "SELECT *\n" +
+                "FROM FILMS\n" +
+                "ORDER BY count_likes DESC\n" +
+                "LIMIT ?;";
+        List<Film> films = selectMore(query, count);
+        return films;
     }
 }
