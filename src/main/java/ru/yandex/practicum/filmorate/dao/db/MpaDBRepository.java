@@ -14,7 +14,7 @@ public class MpaDBRepository extends BaseDBRepositoryImpl<Mpa> {
         super(jdbcTemplate, mapper);
     }
 
-    public List<Mpa> getAll () {
+    public List<Mpa> getAll() {
         String query = "SELECT * FROM ratings;";
         List<Mpa> result = selectMore(query);
         return result;

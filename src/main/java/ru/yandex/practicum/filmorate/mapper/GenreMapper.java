@@ -5,7 +5,7 @@ import ru.yandex.practicum.filmorate.dto.GenreDto;
 import ru.yandex.practicum.filmorate.model.film.Genre;
 
 @Component
-public class GenreMapper implements Mapper<Genre, GenreDto>{
+public class GenreMapper implements Mapper<Genre, GenreDto> {
     @Override
     public Genre dtoToModel(GenreDto dto) {
         Genre model = new Genre();

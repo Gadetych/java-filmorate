@@ -5,7 +5,7 @@ import ru.yandex.practicum.filmorate.dto.MpaDto;
 import ru.yandex.practicum.filmorate.model.film.Mpa;
 
 @Component
-public class MpaMapper implements Mapper <Mpa, MpaDto>{
+public class MpaMapper implements Mapper<Mpa, MpaDto> {
     @Override
     public Mpa dtoToModel(MpaDto dto) {
         Mpa mpa = new Mpa();
