@@ -111,14 +111,6 @@ public class FilmDBRepository extends BaseDBRepositoryImpl<Film> implements Film
 
     @Override
     public List<Film> getTopFilms(int count) {
-//        String query = "SELECT *\n" +
-//                "FROM films\n" +
-//                "WHERE id IN (\n" +
-//                "    SELECT film_id\n" +
-//                "    FROM likes\n" +
-//                "    GROUP BY film_id\n" +
-//                "    ORDER BY COUNT(user_id) DESC\n" +
-//                "    LIMIT ?);";
         String query = "SELECT *\n" +
                 "FROM FILMS\n" +
                 "ORDER BY count_likes DESC\n" +
