@@ -29,3 +29,18 @@ VALUES ('qwe@email', 'qwe', 'qwer', '1995-08-10');
 
 INSERT INTO users (email, login, name, birthday)
 VALUES ('zxc@email', 'zxc', 'zxc', '1995-08-10');
+
+
+INSERT INTO films (name, description, realise_date, duration, rating_id, count_likes)
+VALUES ('qwe', 'qwer', '2010-05-06', 100, 1, 0);
+
+INSERT INTO films (name, description, realise_date, duration, rating_id, count_likes)
+VALUES ('asd', 'asdf', '2010-05-06', 100, 2, 0);
+
+INSERT INTO films (name, description, realise_date, duration, rating_id, count_likes)
+VALUES ('zxc', 'zxcv', '2010-05-06', 100, 3, 0);
+
+INSERT INTO likes (film_id, user_id)
+VALUES (1, 1);
+
+UPDATE films SET COUNT_LIKES = 1 WHERE id = 1;
