@@ -1,17 +1,22 @@
 package ru.yandex.practicum.filmorate.dao.db;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import ru.yandex.practicum.filmorate.dao.BaseDBRepository;
 import ru.yandex.practicum.filmorate.exception.CreateUserException;
 import ru.yandex.practicum.filmorate.exception.UpdateUserException;
+import ru.yandex.practicum.filmorate.model.film.Film;
+import ru.yandex.practicum.filmorate.model.film.Genre;
 
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RequiredArgsConstructor
 public class BaseDBRepositoryImpl<T> implements BaseDBRepository<T> {
@@ -39,6 +44,24 @@ public class BaseDBRepositoryImpl<T> implements BaseDBRepository<T> {
         }
 
         return key.intValue();
+    }
+
+    @Override
+    public void batchUpdate(String sql, Film film) {
+        Set<Genre> genres = film.getGenres();
+        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                Genre genre = (Genre) genres.toArray()[i];
+                ps.setInt(1, film.getId());
+                ps.setInt(2, genre.getId());
+            }
+
+            @Override
+            public int getBatchSize() {
+                return genres.size();
+            }
+        });
     }
 
     @Override

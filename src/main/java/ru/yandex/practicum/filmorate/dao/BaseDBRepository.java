@@ -1,10 +1,14 @@
 package ru.yandex.practicum.filmorate.dao;
 
+import ru.yandex.practicum.filmorate.model.film.Film;
+
 import java.util.List;
 import java.util.Optional;
 
 public interface BaseDBRepository<T> {
      int insert(String sql, Object... params);
+
+    void batchUpdate(String sql, Film obj);
 
     Optional<T> selectOne(String sql, Object... params);
 

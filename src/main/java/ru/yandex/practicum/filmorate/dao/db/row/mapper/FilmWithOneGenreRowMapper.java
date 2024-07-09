@@ -20,14 +20,18 @@ public class FilmWithOneGenreRowMapper implements RowMapper<FilmWithOneGenre> {
             film.setReleaseDate(rs.getDate("realise_date").toLocalDate());
             film.setLikes(rs.getInt("count_likes"));
             film.setDuration(rs.getInt("duration"));
+
             Mpa mpa = new Mpa();
             mpa.setId(rs.getInt("rating_id"));
             mpa.setName(rs.getString("rating_name"));
             film.setMpa(mpa);
-            Genre genre = new Genre();
-            genre.setId(rs.getInt("genre_id"));
-            genre.setTitle(rs.getString("genre_name"));
-            film.setGenre(genre);
+
+            if (rs.getInt("genre_id") > 0) {
+                Genre genre = new Genre();
+                genre.setId(rs.getInt("genre_id"));
+                genre.setTitle(rs.getString("genre_name"));
+                film.setGenre(genre);
+            }
             return film;
         } catch (SQLException e) {
             throw new MapperException("Could not map film row " + rowNum, e);

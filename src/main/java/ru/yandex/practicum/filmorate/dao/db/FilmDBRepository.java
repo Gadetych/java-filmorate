@@ -56,7 +56,9 @@ public class FilmDBRepository extends BaseDBRepositoryImpl<FilmWithOneGenre> imp
                 film.setGenres(new HashSet<>());
             }
             Genre genre = f.getGenre();
-            film.getGenres().add(genre);
+            if (genre != null) {
+                film.getGenres().add(genre);
+            }
             filmMap.put(id, film);
         }
         return filmMap;
@@ -88,10 +90,6 @@ public class FilmDBRepository extends BaseDBRepositoryImpl<FilmWithOneGenre> imp
                 "LEFT JOIN film_genre fg ON fg.film_id = f.id\n" +
                 "LEFT JOIN genres g ON g.id = fg.genre_id\n" +
                 "WHERE f.id = ?;";
-//        Film film = baseDBRepository.selectOne(query, id).orElseThrow(() -> new NotFoundException("Film not found with id " + id));
-//        film.setGenres(getGenres(film));
-//        return Optional.of(film);
-
         List<FilmWithOneGenre> list = selectMore(query, id);
         Film film = filmMapping(list).get(id);
         return Optional.ofNullable(film);
@@ -105,9 +103,7 @@ public class FilmDBRepository extends BaseDBRepositoryImpl<FilmWithOneGenre> imp
         film.setId(id);
         if (film.getGenres() != null) {
             String query = "INSERT INTO film_genre (film_id, genre_id) VALUES (?, ?);";
-            for (Genre genre : film.getGenres()) {
-                insert(query, id, genre.getId());
-            }
+            batchUpdate(query, film);
         }
         return film;
     }
@@ -117,18 +113,11 @@ public class FilmDBRepository extends BaseDBRepositoryImpl<FilmWithOneGenre> imp
         String queryUpdateFilm = "UPDATE films SET name = ?, description = ?, realise_date = ?, duration = ?, count_likes = ?, rating_id = ? WHERE id = ?";
         update(queryUpdateFilm, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(), film.getLikes(), film.getMpa().getId(), film.getId());
 
-        Set<Genre> genres = film.getGenres();
-        if (genres != null) {
-            String queryDeleteFilmGenres = "DELETE FROM film_genre WHERE film_id = ?;";
-            for (Genre genre : genres) {
-                delete(queryDeleteFilmGenres, genre.getId());
-            }
+        String queryDeleteFilmGenres = "DELETE FROM film_genre WHERE film_id = ?;";
+        delete(queryDeleteFilmGenres, film.getId());
 
-            String queryUpdateFilmGenre = "UPDATE film_genre SET film_id = ?, genre_id = ? WHERE genre_id = ?;";
-            for (Genre genre : genres) {
-                update(queryUpdateFilmGenre, film.getId(), genre.getId());
-            }
-        }
+        String queryUpdateFilmGenre = "UPDATE film_genre SET film_id = ?, genre_id = ?;";
+        batchUpdate(queryUpdateFilmGenre, film);
         return film;
     }
 

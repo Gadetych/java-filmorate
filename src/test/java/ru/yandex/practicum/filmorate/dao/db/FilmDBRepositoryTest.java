@@ -84,6 +84,7 @@ class FilmDBRepositoryTest {
         film.setDuration(120);
         Mpa mpa = new Mpa();
         mpa.setId(3);
+        mpa.setName("PG-13");
         film.setMpa(mpa);
         film.setGenres(new HashSet<>());
         film = repository.update(film);
