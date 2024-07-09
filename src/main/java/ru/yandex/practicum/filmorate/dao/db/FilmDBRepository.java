@@ -15,29 +15,11 @@ import java.util.*;
 @Qualifier("DB")
 public class FilmDBRepository extends BaseDBRepositoryImpl<FilmWithOneGenre> implements FilmRepository {
     private final GenreDBRepository genreDBRepository;
-//    private final BaseDBRepositoryImpl<Film> baseDBRepository;
-//    private final FilmMapper filmMapper;
 
     public FilmDBRepository(JdbcTemplate jdbcTemplate, RowMapper<FilmWithOneGenre> mapper, GenreDBRepository genreDBRepository) {
         super(jdbcTemplate, mapper);
         this.genreDBRepository = genreDBRepository;
-//        this.baseDBRepository = baseDBRepository;
-//        this.filmMapper = filmMapper;
     }
-
-//    private Set<Genre> getGenres(Film film) {
-//        String getGenreId = "SELECT genre_id FROM film_genre WHERE film_id = ?;";
-//        Integer filmId = film.getId();
-//        Set<Genre> genres = new HashSet<>();
-//        Set<Integer> genreIds = Set.copyOf(selectMoreInt(getGenreId, filmId));
-//        for (Integer genreId : genreIds) {
-//            Genre genre = new Genre();
-//            genre.setId(genreId);
-//            genres.add(genre);
-//        }
-//        genres = Set.copyOf(genreDBRepository.getAllById(film.getId()));
-//        return genres;
-//    }
 
     private Map<Integer, Film> filmMapping(List<FilmWithOneGenre> list) {
         Map<Integer, Film> filmMap = new HashMap<>();
@@ -140,17 +122,23 @@ public class FilmDBRepository extends BaseDBRepositoryImpl<FilmWithOneGenre> imp
     @Override
     public Collection<Integer> getLikes(int id) {
         String query = "SELECT user_id FROM likes WHERE film_id = ?;";
-        List<Integer> likes = selectMoreInt(query, id);
-        return likes;
+        return selectMoreInt(query, id);
     }
 
     @Override
     public List<Film> getTopFilms(int count) {
-        String query = "SELECT *\n" +
-                "FROM FILMS\n" +
-                "ORDER BY count_likes DESC\n" +
+        String query = "SELECT f.*,\n" +
+                "       r.id mpa_id,\n" +
+                "       r.name mpa_name,\n" +
+                "       fg.genre_id,\n" +
+                "       g.title genre_name\n" +
+                "FROM films f\n" +
+                "LEFT JOIN ratings r ON r.id = f.rating_id\n" +
+                "LEFT JOIN film_genre fg ON fg.film_id = f.id\n" +
+                "LEFT JOIN genres g ON g.id = fg.genre_id\n" +
+                "ORDER BY f.count_likes DESC\n" +
                 "LIMIT ?;";
-//        List<Film> films = baseDBRepository.selectMore(query, count);
-        return new ArrayList<>();
+        List<FilmWithOneGenre> films = selectMore(query, count);
+        return new ArrayList<>(filmMapping(films).values());
     }
 }
