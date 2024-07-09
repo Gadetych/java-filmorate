@@ -1,21 +1,19 @@
-package ru.yandex.practicum.filmorate.dao.db.row.mapper.film;
+package ru.yandex.practicum.filmorate.dao.db.row.mapper;
 
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.MapperException;
-import ru.yandex.practicum.filmorate.model.film.Film;
+import ru.yandex.practicum.filmorate.model.film.FilmWithOneGenre;
+import ru.yandex.practicum.filmorate.model.film.Genre;
 import ru.yandex.practicum.filmorate.model.film.Mpa;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashSet;
 
-@Component
-public class FilmRowMapper implements RowMapper<Film> {
+public class FilmWithOneGenreRowMapper implements RowMapper<FilmWithOneGenre> {
     @Override
-    public Film mapRow(ResultSet rs, int rowNum) {
+    public FilmWithOneGenre mapRow(ResultSet rs, int rowNum) {
         try {
-            Film film = new Film();
+            FilmWithOneGenre film = new FilmWithOneGenre();
             film.setId(rs.getInt("id"));
             film.setName(rs.getString("name"));
             film.setDescription(rs.getString("description"));
@@ -26,7 +24,10 @@ public class FilmRowMapper implements RowMapper<Film> {
             mpa.setId(rs.getInt("rating_id"));
             mpa.setName(rs.getString("rating_name"));
             film.setMpa(mpa);
-            film.setGenres(new HashSet<>());
+            Genre genre = new Genre();
+            genre.setId(rs.getInt("genre_id"));
+            genre.setTitle(rs.getString("genre_name"));
+            film.setGenre(genre);
             return film;
         } catch (SQLException e) {
             throw new MapperException("Could not map film row " + rowNum, e);

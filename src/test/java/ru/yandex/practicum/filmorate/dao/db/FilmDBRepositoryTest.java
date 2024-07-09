@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import ru.yandex.practicum.filmorate.dao.BaseDBRepository;
+import ru.yandex.practicum.filmorate.dao.db.row.mapper.FilmWithOneGenreRowMapper;
 import ru.yandex.practicum.filmorate.dao.db.row.mapper.film.FilmRowMapper;
 import ru.yandex.practicum.filmorate.dao.db.row.mapper.film.GenreRowMapper;
 import ru.yandex.practicum.filmorate.dao.db.row.mapper.film.MpaRowMapper;
@@ -34,7 +35,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @AutoConfigureTestDatabase
 @ContextConfiguration(classes = {
-        FilmDBRepository.class, FilmService.class, FilmMapper.class, FilmRowMapper.class, BaseDBRepository.class,
+        FilmDBRepository.class, FilmService.class, FilmMapper.class, FilmRowMapper.class, BaseDBRepository.class, FilmWithOneGenreRowMapper.class,
         GenreDBRepository.class, GenreService.class, GenreMapper.class, GenreRowMapper.class,
         MpaDBRepository.class, MpaService.class, MpaMapper.class, MpaRowMapper.class,
         UserDBRepository.class, UserService.class, UserMapper.class, UserRowMapper.class})
