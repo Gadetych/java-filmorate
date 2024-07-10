@@ -19,13 +19,11 @@ public class MpaController {
 
     @GetMapping
     public List<MpaDto> getAll() {
-        List<MpaDto> mpaDtoList = mpaService.getAll();
-        return mpaDtoList;
+        return mpaService.getAll();
     }
 
     @GetMapping("/{id}")
     public MpaDto getById(@PathVariable @Positive Integer id) {
-        MpaDto mpaDto = mpaService.getById(id);
-        return mpaDto;
+        return mpaService.getById(id);
     }
 }

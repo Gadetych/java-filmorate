@@ -14,11 +14,9 @@ import java.util.*;
 @Repository
 @Qualifier("DB")
 public class FilmDBRepository extends BaseDBRepositoryImpl<FilmWithOneGenre> implements FilmRepository {
-    private final GenreDBRepository genreDBRepository;
 
-    public FilmDBRepository(JdbcTemplate jdbcTemplate, RowMapper<FilmWithOneGenre> mapper, GenreDBRepository genreDBRepository) {
+    public FilmDBRepository(JdbcTemplate jdbcTemplate, RowMapper<FilmWithOneGenre> mapper) {
         super(jdbcTemplate, mapper);
-        this.genreDBRepository = genreDBRepository;
     }
 
     private Map<Integer, Film> filmMapping(List<FilmWithOneGenre> list) {
@@ -35,7 +33,7 @@ public class FilmDBRepository extends BaseDBRepositoryImpl<FilmWithOneGenre> imp
                 film.setLikes(f.getLikes());
                 film.setMpa(f.getMpa());
                 film.setReleaseDate(f.getReleaseDate());
-                film.setGenres(new HashSet<>());
+                film.setGenres(new TreeSet<>(Comparator.comparing(Genre::getId)));
             }
             Genre genre = f.getGenre();
             if (genre != null) {
@@ -95,11 +93,13 @@ public class FilmDBRepository extends BaseDBRepositoryImpl<FilmWithOneGenre> imp
         String queryUpdateFilm = "UPDATE films SET name = ?, description = ?, realise_date = ?, duration = ?, count_likes = ?, rating_id = ? WHERE id = ?";
         update(queryUpdateFilm, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(), film.getLikes(), film.getMpa().getId(), film.getId());
 
-        String queryDeleteFilmGenres = "DELETE FROM film_genre WHERE film_id = ?;";
-        delete(queryDeleteFilmGenres, film.getId());
+        if (film.getGenres() != null) {
+            String queryDeleteFilmGenres = "DELETE FROM film_genre WHERE film_id = ?;";
+            delete(queryDeleteFilmGenres, film.getId());
 
-        String queryUpdateFilmGenre = "UPDATE film_genre SET film_id = ?, genre_id = ?;";
-        batchUpdate(queryUpdateFilmGenre, film);
+            String queryUpdateFilmGenre = "UPDATE film_genre SET film_id = ?, genre_id = ?;";
+            batchUpdate(queryUpdateFilmGenre, film);
+        }
         return film;
     }
 
@@ -129,7 +129,7 @@ public class FilmDBRepository extends BaseDBRepositoryImpl<FilmWithOneGenre> imp
     public List<Film> getTopFilms(int count) {
         String query = "SELECT f.*,\n" +
                 "       r.id mpa_id,\n" +
-                "       r.name mpa_name,\n" +
+                "       r.name rating_name,\n" +
                 "       fg.genre_id,\n" +
                 "       g.title genre_name\n" +
                 "FROM films f\n" +

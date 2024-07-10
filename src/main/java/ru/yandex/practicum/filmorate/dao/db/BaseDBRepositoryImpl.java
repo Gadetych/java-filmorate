@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import ru.yandex.practicum.filmorate.dao.BaseDBRepository;
+import ru.yandex.practicum.filmorate.exception.CreateException;
 import ru.yandex.practicum.filmorate.exception.CreateUserException;
 import ru.yandex.practicum.filmorate.exception.UpdateUserException;
 import ru.yandex.practicum.filmorate.model.film.Film;
@@ -51,10 +52,14 @@ public class BaseDBRepositoryImpl<T> implements BaseDBRepository<T> {
         Set<Genre> genres = film.getGenres();
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
             @Override
-            public void setValues(PreparedStatement ps, int i) throws SQLException {
-                Genre genre = (Genre) genres.toArray()[i];
-                ps.setInt(1, film.getId());
-                ps.setInt(2, genre.getId());
+            public void setValues(PreparedStatement ps, int i) {
+                try {
+                    Genre genre = (Genre) genres.toArray()[i];
+                    ps.setInt(1, film.getId());
+                    ps.setInt(2, genre.getId());
+                } catch (SQLException e) {
+                    throw new CreateException("Failed to save fim-genre", e);
+                }
             }
 
             @Override
