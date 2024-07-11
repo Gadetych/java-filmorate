@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> getUsers() {
         return userRepository.getUsers().stream()
-                .map(user -> userMapper.modelToDto(user))
+                .map(userMapper::modelToDto)
                 .toList();
     }
 
@@ -33,14 +33,6 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.get(id)
                 .orElseThrow(() -> new NotFoundException("The user with the ID was not found " + id));
         return userMapper.modelToDto(user);
-    }
-
-    private boolean checkUserExists(Integer id) {
-        if (id == null) {
-            return false;
-        }
-        return userRepository.get(id)
-                .isPresent();
     }
 
     @Override

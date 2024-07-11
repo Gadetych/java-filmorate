@@ -23,7 +23,6 @@ public class FilmServiceImpl implements FilmService {
     private final FilmRepository filmRepository;
     @Qualifier("DB")
     private final UserRepository userRepository;
-
     private final FilmMapper filmMapper;
 
     @Override
@@ -78,8 +77,12 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public void removeLike(int id, int userId) {
-        filmRepository.get(id).orElseThrow(() -> new NotFoundException("The movie with the ID was not found: " + id));
-        userRepository.get(userId).orElseThrow(() -> new NotFoundException("The user with the ID was not found: " + userId));
+        if (!filmRepository.exists(id)) {
+            throw new NotFoundException("The movie with the ID was not found: " + id);
+        }
+        if (!userRepository.exists(userId)) {
+            throw new NotFoundException("The movie with the ID was not found: " + userId);
+        }
         if (filmRepository.getLikes(id) == null || filmRepository.getLikes(id).isEmpty()) {
             return;
         }
