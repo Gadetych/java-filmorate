@@ -42,8 +42,7 @@ public class FilmServiceImpl implements FilmService {
     public FilmDto get(int id) {
         Film model = filmRepository.get(id)
                 .orElseThrow(() -> new NotFoundException("The movie with the ID was not found: " + id));
-        FilmDto dto = filmMapper.modelToDto(model);
-        return dto;
+        return filmMapper.modelToDto(model);
     }
 
     @Override
@@ -57,7 +56,9 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public FilmDto update(FilmDto dto) {
         int id = dto.getId();
-        filmRepository.get(id).orElseThrow(() -> new NotFoundException("The movie with the ID was not found: " + id));
+        if (!filmRepository.exists(id)) {
+            throw new NotFoundException("The movie with the ID was not found: " + id);
+        }
         Film model = filmMapper.dtoToModel(dto);
         model = filmRepository.update(model);
         dto = filmMapper.modelToDto(model);
@@ -66,10 +67,12 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public void likeIt(int id, int userId) {
-        filmRepository.get(id)
-                .orElseThrow(() -> new NotFoundException("The movie with the ID was not found: " + id));
-        userRepository.get(userId)
-                .orElseThrow(() -> new NotFoundException("The user with the ID was not found: " + userId));
+        if (!filmRepository.exists(id)) {
+            throw new NotFoundException("The movie with the ID was not found: " + id);
+        }
+        if (!userRepository.exists(userId)) {
+            throw new NotFoundException("The movie with the ID was not found: " + userId);
+        }
         filmRepository.likeIt(id, userId);
     }
 
@@ -85,7 +88,9 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public List<FilmDto> getLikes(int id) {
-        filmRepository.get(id).orElseThrow(() -> new NotFoundException("Not found film with id = " + id));
+        if (!filmRepository.exists(id)) {
+            throw new NotFoundException("The movie with the ID was not found: " + id);
+        }
         Collection<Integer> likes = filmRepository.getLikes(id);
         List<FilmDto> result = new ArrayList<>();
         likes.forEach(f -> result.add(get(f)));

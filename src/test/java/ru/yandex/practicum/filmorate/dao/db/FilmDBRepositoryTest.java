@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @JdbcTest
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -113,5 +114,10 @@ class FilmDBRepositoryTest {
         List<Integer> actual = (List<Integer>) repository.getLikes(1);
 
         assertThat(actual).isEqualTo(List.of(1));
+    }
+
+    @Test
+    void notExist() {
+        assertFalse(repository.exists(5));
     }
 }

@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BaseDBRepository<T> {
+    boolean exists(String sql, int id);
+
     int insert(String sql, Object... params);
 
     void batchUpdate(String sql, Film obj);

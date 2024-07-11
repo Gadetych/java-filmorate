@@ -23,18 +23,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getUsers() {
-        List<UserDto> usersDto = userRepository.getUsers().stream()
+        return userRepository.getUsers().stream()
                 .map(user -> userMapper.modelToDto(user))
                 .toList();
-        return usersDto;
     }
 
     @Override
     public UserDto get(int id) {
         User user = userRepository.get(id)
                 .orElseThrow(() -> new NotFoundException("The user with the ID was not found " + id));
-        UserDto userDto = userMapper.modelToDto(user);
-        return userDto;
+        return userMapper.modelToDto(user);
     }
 
     private boolean checkUserExists(Integer id) {
@@ -52,25 +50,23 @@ public class UserServiceImpl implements UserService {
         }
         User user = userMapper.dtoToModel(userDto);
         user = userRepository.add(user);
-        UserDto userDtoWithId = userMapper.modelToDto(user);
-        return userDtoWithId;
+        return userMapper.modelToDto(user);
     }
 
     @Override
     public UserDto update(UserDto userDto) {
-        if (!checkUserExists(userDto.getId())) {
+        if (!userRepository.exists(userDto.getId())) {
             throw new NotFoundException("Not found user with id = " + userDto.getId());
         }
         User user = userMapper.dtoToModel(userDto);
         user = userRepository.update(user);
-        UserDto newUserDto = userMapper.modelToDto(user);
-        return newUserDto;
+        return userMapper.modelToDto(user);
     }
 
     @Override
     public void remove(int id) {
-        if (!checkUserExists(id)) {
-            throw new NotFoundException("Not found user with id = " + id);
+        if (!userRepository.exists(id)) {
+            return;
         }
         userRepository.remove(id);
     }
@@ -78,16 +74,24 @@ public class UserServiceImpl implements UserService {
     //    Может здесь нужен другой репозиторий?
     @Override
     public void addFriend(int id, int friendId) {
-        userRepository.get(id).orElseThrow(() -> new NotFoundException("Not found user with id = " + id));
-        userRepository.get(friendId).orElseThrow(() -> new NotFoundException("Not found friend with id = " + friendId));
+        if (!userRepository.exists(id)) {
+            throw new NotFoundException("Not found user with id = " + id);
+        }
+        if (!userRepository.exists(friendId)) {
+            throw new NotFoundException("Not found user with id = " + friendId);
+        }
 
         userRepository.addFriend(id, friendId);
     }
 
     @Override
     public void removeFriend(int id, int friendId) {
-        userRepository.get(id).orElseThrow(() -> new NotFoundException("Not found user with id = " + id));
-        userRepository.get(friendId).orElseThrow(() -> new NotFoundException("Not found friend with id = " + id));
+        if (!userRepository.exists(id)) {
+            throw new NotFoundException("Not found user with id = " + id);
+        }
+        if (!userRepository.exists(friendId)) {
+            throw new NotFoundException("Not found user with id = " + friendId);
+        }
         if (userRepository.getFriends(id) == null || userRepository.getFriends(id).isEmpty()) {
             return;
         }
@@ -96,7 +100,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getFriends(int id) {
-        userRepository.get(id).orElseThrow(() -> new NotFoundException("Not found user with id = " + id));
+        if (!userRepository.exists(id)) {
+            throw new NotFoundException("Not found user with id = " + id);
+        }
         Collection<Integer> friends = userRepository.getFriends(id);
         List<UserDto> result = new ArrayList<>();
         friends.forEach(f -> result.add(userMapper.modelToDto(userRepository.get(f).get())));
@@ -105,8 +111,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getCommonFriends(int id, int otherId) {
-        userRepository.get(id).orElseThrow(() -> new NotFoundException("Not found user with id = " + id));
-        userRepository.get(otherId).orElseThrow(() -> new NotFoundException("Not found other user with id = " + id));
+        if (!userRepository.exists(id)) {
+            throw new NotFoundException("Not found user with id = " + id);
+        }
+        if (!userRepository.exists(otherId)) {
+            throw new NotFoundException("Not found user with id = " + otherId);
+        }
         List<UserDto> result = new ArrayList<>();
         List<Integer> commonFriendsIds = userRepository.getCommonFriends(id, otherId);
         commonFriendsIds.forEach(f -> result.add(userMapper.modelToDto(userRepository.get(f).get())));

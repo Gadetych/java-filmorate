@@ -22,6 +22,12 @@ public class UserDBRepository extends BaseDBRepositoryImpl<User> implements User
 
 
     @Override
+    public boolean exists(int id) {
+        String sql = "SELECT EXISTS (SELECT id FROM users WHERE id = ?)";
+        return exists(sql, id);
+    }
+
+    @Override
     public List<User> getUsers() {
         String sql = "SELECT * FROM users;";
         return selectMore(sql);

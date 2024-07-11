@@ -45,6 +45,12 @@ public class FilmDBRepository extends BaseDBRepositoryImpl<FilmWithOneGenre> imp
     }
 
     @Override
+    public boolean exists(int id) {
+        String sql = "SELECT EXISTS (SELECT id FROM films WHERE id = ?)";
+        return exists(sql, id);
+    }
+
+    @Override
     public List<Film> getFilms() {
         String query = "SELECT f.*,\n" +
                 "       r.name rating_name,\n" +

@@ -15,6 +15,11 @@ public class InMemoryFilmRepository implements FilmRepository {
     private Integer maxId = 0;
 
     @Override
+    public boolean exists(int id) {
+        return films.containsKey(id);
+    }
+
+    @Override
     public List<Film> getFilms() {
         return new ArrayList<>(films.values());
     }

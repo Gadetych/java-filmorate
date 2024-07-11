@@ -8,6 +8,8 @@ import java.util.Optional;
 
 public interface UserRepository {
 
+    boolean exists(int id);
+
     List<User> getUsers();
 
     Optional<User> get(int id);

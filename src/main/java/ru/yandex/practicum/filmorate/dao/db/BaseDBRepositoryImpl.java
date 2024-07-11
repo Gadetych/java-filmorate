@@ -25,6 +25,11 @@ public class BaseDBRepositoryImpl<T> implements BaseDBRepository<T> {
     protected final RowMapper<T> mapper;
 
     @Override
+    public boolean exists(String sql, int id) {
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, id));
+    }
+
+    @Override
     public int insert(String sql, Object... params) {
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         int rowsAffected = jdbcTemplate.update(con -> {

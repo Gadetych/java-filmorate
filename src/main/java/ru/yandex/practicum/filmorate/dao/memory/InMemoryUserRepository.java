@@ -15,6 +15,11 @@ public class InMemoryUserRepository implements UserRepository {
     Integer maxId = 0;
 
     @Override
+    public boolean exists(int id) {
+        return users.containsKey(id);
+    }
+
+    @Override
     public List<User> getUsers() {
         return new ArrayList<>(users.values());
     }
