@@ -1,41 +1,48 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.yandex.practicum.filmorate.dto.ExceptionResponse;
+import ru.yandex.practicum.filmorate.exception.IncorrectGenreException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.UserAlreadyExistException;
+import ru.yandex.practicum.filmorate.model.exeption.ExceptionResponse;
 
 @RestControllerAdvice("ru.yandex.practicum.filmorate")
 @Validated
 public class FilmorateExceptionHandler {
 
-    @ExceptionHandler
+    @ExceptionHandler({DataAccessException.class, NotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ExceptionResponse handleNotFound(NotFoundException e) {
+    public ExceptionResponse handleNotFound(RuntimeException e) {
+        e.printStackTrace();
         return new ExceptionResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
     public ExceptionResponse handleUserAlreadyExist(UserAlreadyExistException e) {
+        e.printStackTrace();
         return new ExceptionResponse(e.getMessage());
     }
 
-    @ExceptionHandler({ConstraintViolationException.class, MethodArgumentNotValidException.class})
+    @ExceptionHandler({ConstraintViolationException.class, MethodArgumentNotValidException.class, IncorrectGenreException.class, DataIntegrityViolationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionResponse handleBadRequest(Exception e) {
+        e.printStackTrace();
         return new ExceptionResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ExceptionResponse handleInternalServerError(Exception e) {
+        e.printStackTrace();
         return new ExceptionResponse(e.getMessage());
     }
 

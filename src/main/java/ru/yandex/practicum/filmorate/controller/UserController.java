@@ -7,8 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.dto.Marker;
-import ru.yandex.practicum.filmorate.dto.User;
+import ru.yandex.practicum.filmorate.dto.UserDto;
+import ru.yandex.practicum.filmorate.model.Marker;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.List;
@@ -22,42 +22,52 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public List<User> getUsers() {
+    public List<UserDto> getUsers() {
         log.info("<== Get all users");
         return userService.getUsers();
     }
 
     @GetMapping("/{id}")
-    public User get(@PathVariable @Positive int id) {
+    public UserDto get(@PathVariable @Positive int id) {
         log.info("==> GET /users/{id} {}", id);
-        User user = userService.get(id);
-        log.info("<== GET user = {}", user);
-        return user;
+        UserDto userDto = userService.get(id);
+        log.info("<== GET user = {}", userDto);
+        return userDto;
     }
 
     @PostMapping
     @Validated(Marker.Create.class)
     @ResponseStatus(HttpStatus.CREATED)
-    public User add(@RequestBody @Valid User user) {
-        log.info("==> POST /users {}", user);
-        User newUser = userService.add(user);
-        log.info("<== Added user: {}", user);
-        return newUser;
+    public UserDto add(@RequestBody @Valid UserDto userDto) {
+        log.info("==> POST /users {}", userDto);
+        UserDto newUserDto = null;
+        newUserDto = userService.add(userDto);
+        log.info("<== Added user: {}", userDto);
+        return newUserDto;
     }
 
     @PutMapping
     @Validated(Marker.Update.class)
-    public User update(@RequestBody @Valid User user) {
-        log.info("==> PUT /users {}", user);
-        User newUser = userService.update(user);
-        log.info("<== Updated user: {}", user);
-        return newUser;
+    public UserDto update(@RequestBody @Valid UserDto userDto) {
+        log.info("==> PUT /users {}", userDto);
+        UserDto newUserDto = userService.update(userDto);
+        log.info("<== Updated user: {}", userDto);
+        return newUserDto;
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeById(@PathVariable @Positive int id) {
+        log.info("==> DELETE /users/{}", id);
+        userService.remove(id);
+        log.info("<== Deleted user: {}", id);
     }
 
     @PutMapping("/{id}/friends/{friendId}")
     public void addFriends(@PathVariable @Positive int id, @PathVariable @Positive int friendId) {
         log.info("==> POST /users/{}/friends/{}", id, friendId);
         userService.addFriend(id, friendId);
+        log.info("<== Added friend: {}", id);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
@@ -65,20 +75,21 @@ public class UserController {
     public void removeFriend(@PathVariable @Positive int id, @PathVariable @Positive int friendId) {
         log.info("==> DELETE /users/{}/friends/{}", id, friendId);
         userService.removeFriend(id, friendId);
+        log.info("<== Removed user: {}", id);
     }
 
     @GetMapping("/{id}/friends")
-    public List<User> getFriends(@PathVariable @Positive int id) {
+    public List<UserDto> getFriends(@PathVariable @Positive int id) {
         log.info("==> GET /users/{}/friends", id);
-        List<User> friends = userService.getFriends(id);
+        List<UserDto> friends = userService.getFriends(id);
         log.info("<== GET /users/{}/friends = {}", id, friends);
         return friends;
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
-    public List<User> commonFriends(@PathVariable @Positive int id, @PathVariable @Positive int otherId) {
+    public List<UserDto> commonFriends(@PathVariable @Positive int id, @PathVariable @Positive int otherId) {
         log.info("==> GET /users/{}/friends/common/{}", id, otherId);
-        List<User> commonFriends = userService.getCommonFriends(id, otherId);
+        List<UserDto> commonFriends = userService.getCommonFriends(id, otherId);
         log.info("<== GET /users/{}/friends/common/{} = {}", id, otherId, commonFriends);
         return commonFriends;
 
